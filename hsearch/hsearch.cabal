@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7aa406b638823f0b2849eccb5c488c2a77588192a7475ba000ff830b182a8988
+-- hash: 072ddbf0293b08d537b0f3beb4f5614cdbf9c3bae5d527074465d0667fb73969
 
 name:           hsearch
 version:        0.1.0.0
@@ -31,7 +31,6 @@ library
       Data.Search.Frontier.PQFrontier
       Data.Search.Impl.RootSearchNode
       Data.Search.SearchNode
-      Examples.NineTales
       Search
       Search.Politics
   other-modules:
@@ -39,7 +38,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      HUnit
+    , base >=4.7 && <5
     , pqueue
   default-language: Haskell2010
 
@@ -51,7 +51,8 @@ executable hsearch-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      HUnit
+    , base >=4.7 && <5
     , hsearch
     , pqueue
   default-language: Haskell2010
@@ -65,7 +66,8 @@ test-suite inference-engine-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      HUnit
+    , base >=4.7 && <5
     , hsearch
     , pqueue
   default-language: Haskell2010

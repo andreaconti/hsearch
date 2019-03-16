@@ -3,7 +3,6 @@
 
 module Search 
     ( search
-    , CheckTime
     ) where
 
 import qualified Data.Search.SearchNode as SN
@@ -13,28 +12,24 @@ import           Data.Search.Impl.RootSearchNode (RSNode(..))
 import           Data.Search.Frontier (Frontier, next, insert)
 import qualified Data.Search.Frontier.PQFrontier as PQ
 
+import           Search.Politics (CheckTime(..))
+
 import           Control.Monad 
 import           Control.Applicative
 import           Data.Maybe (maybeToList, listToMaybe)
-
-
--- | To specify if the goal reached check must be done at node generation
--- or at goal expansion
-data CheckTime = Generation | Expansion
-    deriving Eq
 
 -- | Goal utility in order to find first goal in a list o nodes
 findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
 
 -- | search doc TODO
-search :: (Eq s, Ord i) => (s -> [(s, Int)]) -- generator
-                        -> (s -> Bool)       -- checkGoal
-                        -> (SNode s -> i)    -- policy
+search :: (Eq s, Ord i) => (SNode s -> i)    -- policy
                         -> CheckTime         -- when apply policy
+                        -> (s -> Bool)       -- checkGoal
+                        -> (s -> [(s, Int)]) -- generator
                         -> s                 -- initial state
                         -> [s]               -- returns list of states
-search g cg p ct s = join . maybeToList $ loop initFrontier
+search p ct cg g s = join . maybeToList $ loop initFrontier
     where initFrontier = insert (PQ.priorityQueueFrontier (\(RSNode _ x) -> p x)) [RSNode Root (SN.SNode s 0 0)]
           loop fr = do
             (cFr, rsNode@(RSNode _ currentNode@(SNode s d c))) <- next fr

@@ -24,6 +24,10 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+  - hsearch
+  - matrix
+  - vector
 
 executables:
   hsearch-examples-exe:
