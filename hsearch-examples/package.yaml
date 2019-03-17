@@ -28,6 +28,7 @@ library:
   - hsearch
   - matrix
   - vector
+  - random
 
 executables:
   hsearch-examples-exe:

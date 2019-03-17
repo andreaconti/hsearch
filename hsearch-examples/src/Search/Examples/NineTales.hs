@@ -7,6 +7,11 @@ import Data.Vector (imap)
 import System.Random
 import Control.Monad
 
+import Search
+import Search.Politics (breadthFirstPolicy, CheckTime(..))
+
+
+
 -- model types
 
 type Table = Matrix Card
@@ -34,8 +39,10 @@ findMoves t = filter bounds [(ex-1, ey), (ex+1, ey), (ex, ey-1), (ex, ey+1)]
     where (ex, ey) = fromJust $ emptyPos t
           bounds (x, y) = x >= 1 && y >= 1 && x <= nrows t && y <= ncols t
 
-stateGenerator :: Table -> Table
-stateGenerator = undefined
+stateGenerator :: Table -> [(Table, Int)]
+stateGenerator t = let ep    = fromJust $ emptyPos t
+                       moves = findMoves t
+                   in  zip (map (\x -> switchCards ep x t) moves) [1..]
 
 switchCards :: Pos -> Pos -> Table -> Table
 switchCards (x1, y1) (x2, y2) t = 
@@ -48,3 +55,7 @@ goal = fromLists
     , [Card 4, Card 5, Card 6]
     , [Card 7, Card 8, Empty ] ]
 
+genTable :: [[Int]] -> Matrix Card
+genTable = fromLists . map (map (\x -> if x == 0 then Empty else Card x))
+
+solve = search breadthFirstPolicy Generation (== goal) stateGenerator 

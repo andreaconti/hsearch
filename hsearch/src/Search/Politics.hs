@@ -15,3 +15,7 @@ data CheckTime = Generation | Expansion
 -- | Breadth-First Search politic implementation, returns the depth
 breadthFirstPolicy :: (Eq s) => SNode s -> Int
 breadthFirstPolicy = SN.depth
+
+-- | Depth-First Search Policy politic implementation
+depthFirstPolicy :: (Eq s) => SNode s -> Int
+depthFirstPolicy n = undefined

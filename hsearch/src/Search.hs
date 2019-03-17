@@ -1,6 +1,16 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE GADTs #-}
 
+{-|
+Module      : Search
+Description : Front-end module for search algorithms
+Copyright   : 
+License     : GPL-3
+Maintainer  : andreaconti
+Stability   : experimental
+Portability : Windows, POSIX
+-}
+
 module Search 
     ( search
     ) where
@@ -22,13 +32,13 @@ import           Data.Maybe (maybeToList, listToMaybe)
 findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
 
--- | search doc TODO
-search :: (Eq s, Ord i) => (SNode s -> i)    -- policy
-                        -> CheckTime         -- when apply policy
-                        -> (s -> Bool)       -- checkGoal
-                        -> (s -> [(s, Int)]) -- generator
-                        -> s                 -- initial state
-                        -> [s]               -- returns list of states
+-- | 'search' function provides a high level customizable way to specific a search algorithm
+search :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be user
+                        -> CheckTime         -- ^ when apply policy
+                        -> (s -> Bool)       -- ^ function used to check if the goal is reached
+                        -> (s -> [(s, Int)]) -- ^ generator of states
+                        -> s                 -- ^ initial state
+                        -> [s]               -- ^ returns list of states
 search p ct cg g s = join . maybeToList $ loop initFrontier
     where initFrontier = insert (PQ.priorityQueueFrontier (\(RSNode _ x) -> p x)) [RSNode Root (SN.SNode s 0 0)]
           loop fr = do
