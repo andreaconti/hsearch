@@ -1,14 +1,14 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 072ddbf0293b08d537b0f3beb4f5614cdbf9c3bae5d527074465d0667fb73969
+-- hash: a857635540072e5db4b546e02a6b8378cb8e8a51cccad2d212d26139a231d08f
 
 name:           hsearch
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/andreaconti/inference-engine#readme>
+description:    Please see the README on GitHub at <https://github.com/andreaconti/hsearch#readme>
 homepage:       https://github.com/andreaconti/hsearch#readme
 bug-reports:    https://github.com/andreaconti/hsearch/issues
 author:         Andrea Conti
@@ -32,14 +32,13 @@ library
       Data.Search.Impl.RootSearchNode
       Data.Search.SearchNode
       Search
-      Search.Politics
+      Search.Policies
   other-modules:
       Paths_hsearch
   hs-source-dirs:
       src
   build-depends:
-      HUnit
-    , base >=4.7 && <5
+      base >=4.7 && <5
     , pqueue
   default-language: Haskell2010
 
@@ -51,16 +50,15 @@ executable hsearch-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      HUnit
-    , base >=4.7 && <5
+      base >=4.7 && <5
     , hsearch
-    , pqueue
   default-language: Haskell2010
 
-test-suite inference-engine-test
+test-suite hsearch-test
   type: exitcode-stdio-1.0
-  main-is: Spec.hs
+  main-is: Main.hs
   other-modules:
+      FrontierImplTests
       Paths_hsearch
   hs-source-dirs:
       test
@@ -69,5 +67,6 @@ test-suite inference-engine-test
       HUnit
     , base >=4.7 && <5
     , hsearch
-    , pqueue
+    , test-framework
+    , test-framework-hunit
   default-language: Haskell2010

@@ -1,5 +1,7 @@
-module Search.Politics 
+module Search.Policies 
     ( breadthFirstPolicy
+    , uniformCostPolicy
+    , depthFirstPolicy
     , CheckTime(..)
     ) where
 
@@ -12,10 +14,16 @@ import           Data.Function (on)
 data CheckTime = Generation | Expansion
     deriving Eq
 
--- | Breadth-First Search politic implementation, returns the depth
+-- | Breadth-First Search policy implementation, returns the depth
 breadthFirstPolicy :: (Eq s) => SNode s -> Int
 breadthFirstPolicy = SN.depth
 
--- | Depth-First Search Policy politic implementation
+-- | Uniform-Cost Search policy implementation
+uniformCostPolicy :: (Eq s) => SNode s -> Int
+uniformCostPolicy n = SN.cost n
+
+-- | Depth-First Search policy implementation
 depthFirstPolicy :: (Eq s) => SNode s -> Int
-depthFirstPolicy n = undefined
+depthFirstPolicy n = - (SN.depth n)
+
+

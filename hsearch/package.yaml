@@ -17,15 +17,15 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/andreaconti/inference-engine#readme>
+description:         Please see the README on GitHub at <https://github.com/andreaconti/hsearch#readme>
 
 dependencies:
 - base >= 4.7 && < 5
-- pqueue
-- HUnit
 
 library:
   source-dirs: src
+  dependencies:
+  - pqueue
 
 executables:
   hsearch-exe:
@@ -39,8 +39,8 @@ executables:
     - hsearch
 
 tests:
-  inference-engine-test:
-    main:                Spec.hs
+  hsearch-test:
+    main:                Main.hs
     source-dirs:         test
     ghc-options:
     - -threaded
@@ -48,3 +48,6 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - hsearch
+    - HUnit
+    - test-framework
+    - test-framework-hunit

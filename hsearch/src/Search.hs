@@ -22,7 +22,7 @@ import           Data.Search.Impl.RootSearchNode (RSNode(..))
 import           Data.Search.Frontier (Frontier, next, insert)
 import qualified Data.Search.Frontier.PQFrontier as PQ
 
-import           Search.Politics (CheckTime(..))
+import           Search.Policies (CheckTime(..))
 
 import           Control.Monad 
 import           Control.Applicative
@@ -33,7 +33,7 @@ findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
 
 -- | 'search' function provides a high level customizable way to specific a search algorithm
-search :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be user
+search :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used
                         -> CheckTime         -- ^ when apply policy
                         -> (s -> Bool)       -- ^ function used to check if the goal is reached
                         -> (s -> [(s, Int)]) -- ^ generator of states
@@ -49,4 +49,5 @@ search p ct cg g s = join . maybeToList $ loop initFrontier
                 expGoal    = guard (ct == Expansion) >> findGoal cg (map SN.state newSNodes)
             case genGoal <|> expGoal of
                 Nothing -> loop (insert cFr $ map (RSNode rsNode) newSNodes)
-                goal    -> return $ RN.rsNodeToList rsNode
+                goal    -> return $ map SN.state . RN.rsNodeToList $ rsNode
+

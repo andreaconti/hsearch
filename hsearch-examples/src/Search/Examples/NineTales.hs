@@ -8,8 +8,7 @@ import System.Random
 import Control.Monad
 
 import Search
-import Search.Politics (breadthFirstPolicy, CheckTime(..))
-
+import Search.Policies (breadthFirstPolicy, CheckTime(..))
 
 
 -- model types
