@@ -4,12 +4,21 @@ module Data.Search.Impl.RootSearchNode
     ) where
 
 import Data.Search.SearchNode
+import Control.Lens
 
 data RSNode s = Root 
               | RSNode
                 { root :: RSNode s
                 , node :: s
-                } deriving Eq
+                } deriving (Show,Eq)
+
+-- INSTANCES --
+
+instance Functor RSNode where
+    fmap f Root = Root
+    fmap f (RSNode root node) = RSNode (fmap f root) (f node)
+
+-- TOOLS --
 
 rsNodeToList' :: [s] -> RSNode s -> [s]
 rsNodeToList' ls Root = ls

@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.31.1.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a857635540072e5db4b546e02a6b8378cb8e8a51cccad2d212d26139a231d08f
+-- hash: f139295274a811cfe67048262712776d805c67bffca2a95b21fea0f5ccb16132
 
 name:           hsearch
 version:        0.1.0.0
@@ -39,19 +39,8 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , lens >=4.0 && <=4.17
     , pqueue
-  default-language: Haskell2010
-
-executable hsearch-exe
-  main-is: Main.hs
-  other-modules:
-      Paths_hsearch
-  hs-source-dirs:
-      app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , hsearch
   default-language: Haskell2010
 
 test-suite hsearch-test

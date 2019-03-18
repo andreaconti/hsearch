@@ -26,17 +26,7 @@ library:
   source-dirs: src
   dependencies:
   - pqueue
-
-executables:
-  hsearch-exe:
-    main:                Main.hs
-    source-dirs:         app
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - hsearch
+  - lens >= 4.0 && <= 4.17
 
 tests:
   hsearch-test:
