@@ -1,5 +1,4 @@
 {-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE GADTs #-}
 
 {-|
 Module      : Search
@@ -16,6 +15,9 @@ module Search
     , searchUntilDepth
     , iterativeSearch
     , search
+    , breadthFirstSearch
+    , uniformCostSearch
+    , depthFirstSearch
     ) where
 
 import qualified Data.Search.SearchNode as SN
@@ -39,10 +41,10 @@ data MaxDepth = Forever | Until Int deriving (Eq, Show)
 findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
 
--- | 'searchAtDepth' function provides a high level customizable way to specific a search algorithm
+-- | 'searchUntilDepth' function provides a high level customizable way to specific a search algorithm
 searchUntilDepth :: (Eq s, Ord i) => MaxDepth          -- ^ max depth to search
                                   -> (SNode s -> i)    -- ^ policy to be used
-                                  -> CheckTime         -- ^ when apply policy
+                                  -> CheckTime         -- ^ when apply check goal
                                   -> (s -> Bool)       -- ^ function used to check if the goal is reached
                                   -> (s -> [(s, Int)]) -- ^ generator of states
                                   -> s                 -- ^ initial state
@@ -50,21 +52,21 @@ searchUntilDepth :: (Eq s, Ord i) => MaxDepth          -- ^ max depth to search
 searchUntilDepth md p ct cg g s = join . maybeToList $ loop initFrontier
     where initFrontier = insert (PQ.priorityQueueFrontier (\(RSNode _ x) -> p x)) [RSNode Root (SN.SNode s 0 0)]
           loop fr = do
-            (cFr, rsNode@(RSNode _ currentNode@(SNode s d c))) <- next fr
+            (cFr, rsNode@(RSNode _ currentNode@(SNode cs cd cc))) <- next fr
             let 
                 checkDepth Forever _   = True
-                checkDepth (Until d) x = x <= d && d > 0
+                checkDepth (Until d) x = x < d && d > 0
 
-                newSNodes    = guard (checkDepth md d) >> map (\(ns, nc) -> SNode ns (d+1) (nc+c)) (g s)
-                genGoal      = guard (ct == Generation) >> findGoal cg [s]
+                newSNodes    = guard (checkDepth md cd) >> map (\(ns, nc) -> SNode ns (cd+1) (nc+cc)) (g cs)
+                genGoal      = guard (ct == Generation) >> findGoal cg [cs]
                 expGoal      = guard (ct == Expansion) >> findGoal cg (map SN.state newSNodes)
             case genGoal <|> expGoal of
-                Nothing -> loop (insert cFr $ map (RSNode rsNode) newSNodes)
-                goal    -> return $ map SN.state . RN.rsNodeToList $ rsNode
+                Nothing   -> loop (insert cFr $ map (RSNode rsNode) newSNodes)
+                Just goal -> return $ map SN.state . RN.rsNodeToList $ rsNode
 
 -- | 'iterativeSearch' implements a search using a progressive depth until result is found
 iterativeSearch :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used
-                                 -> CheckTime         -- ^ when apply policy
+                                 -> CheckTime         -- ^ when apply check goal
                                  -> (s -> Bool)       -- ^ function used to check if the goal is reached
                                  -> (s -> [(s, Int)]) -- ^ generator of states
                                  -> s                 -- ^ initial state
@@ -78,7 +80,7 @@ iterativeSearch p ct cg g s = let depths = [1..]
 
 -- | 'search' function provides a high level customizable way to specific a search algorithm
 search :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used
-                        -> CheckTime         -- ^ when apply policy
+                        -> CheckTime         -- ^ when apply check goal
                         -> (s -> Bool)       -- ^ function used to check if the goal is reached
                         -> (s -> [(s, Int)]) -- ^ generator of states
                         -> s                 -- ^ initial state

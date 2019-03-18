@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f139295274a811cfe67048262712776d805c67bffca2a95b21fea0f5ccb16132
+-- hash: dc3693ab3b6ba01eb803d616d5d111edc2bf29d57200cf7fd584527e736f23e7
 
 name:           hsearch
 version:        0.1.0.0
@@ -48,6 +48,8 @@ test-suite hsearch-test
   main-is: Main.hs
   other-modules:
       FrontierImplTests
+      SearchNodeTests
+      SearchTests
       Paths_hsearch
   hs-source-dirs:
       test

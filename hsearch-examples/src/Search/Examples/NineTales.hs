@@ -8,8 +8,7 @@ import System.Random
 import Control.Monad
 
 import Search
-import Search.Policies (breadthFirstPolicy, CheckTime(..))
-
+import Search.Policies
 
 -- model types
 
@@ -57,4 +56,4 @@ goal = fromLists
 genTable :: [[Int]] -> Matrix Card
 genTable = fromLists . map (map (\x -> if x == 0 then Empty else Card x))
 
-solve = search breadthFirstPolicy Generation (== goal) stateGenerator 
+solve = iterativeSearch depthFirstPolicy Generation (== goal) stateGenerator 
