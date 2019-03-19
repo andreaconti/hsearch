@@ -10,19 +10,18 @@ import qualified Data.Search.SearchNode as SN
 import           Data.Search.SearchNode (SNode)
 
 -- | PQFrontier implements Frontier with a Priority Queue
-data PQFrontier i s = PQFrontier
-    { getPQueue :: PQ.MinPQueue i s
-    , ordering  :: s -> i
-    }
+data PQFrontier i s = PQFrontier {-# UNPACK #-} !(PQ.MinPQueue i s) -- ^ Priority Queue used
+                                                 (s -> i)           -- ^ priority policy used
 
 instance (Ord i) => Frontier (PQFrontier i) where
     
-    next frontier =
-        let queue    = getPQueue frontier
-            minNode  = snd <$> PQ.getMin queue
+    {-# INLINABLE next #-}
+    next (PQFrontier queue ordering) =
+        let minNode  = snd <$> PQ.getMin queue
             newQueue = PQ.deleteMin queue
-        in  (,) <$> (Just $ PQFrontier newQueue (ordering frontier)) <*> minNode
+        in  (,) <$> (Just $! PQFrontier newQueue ordering) <*> minNode
 
+    {-# INLINABLE insert #-}
     insert (PQFrontier q ord) ns =
         let keys     = map ord ns
             newQueue = PQ.fromList (zip keys ns) `PQ.union` q

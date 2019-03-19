@@ -38,6 +38,7 @@ import           Data.Maybe (maybeToList, listToMaybe)
 data MaxDepth = Forever | Until Int deriving (Eq, Show)
 
 -- | Goal utility in order to find first goal in a list o nodes
+{-# INLINE findGoal #-}
 findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
 
@@ -57,9 +58,10 @@ searchUntilDepth !md p !ct cg g s = join . maybeToList $ loop initFrontier
                 checkDepth Forever _   = True
                 checkDepth (Until d) x = x < d && d > 0
 
-                newSNodes    = guard (checkDepth md cd) >> map (\(ns, nc) -> SNode ns (cd+1) (nc+cc)) (g cs)
-                genGoal      = guard (ct == Generation) >> findGoal cg [cs]
-                expGoal      = guard (ct == Expansion) >> findGoal cg (map SN.state newSNodes)
+                newStates    = g cs
+                newSNodes    = guard (checkDepth md cd) >> map (\(ns, nc) -> SNode ns (cd+1) (nc+cc)) newStates
+                genGoal      = guard (ct == Generation && cg cs) >> (Just $! cs)
+                expGoal      = guard (ct == Expansion) >> findGoal cg (map fst newStates)
             case genGoal <|> expGoal of
                 Nothing   -> loop (insert cFr $ map (RSNode rsNode) newSNodes)
                 Just goal -> return $! map SN.state . RN.rsNodeToList $ rsNode
