@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE RankNTypes, BangPatterns #-}
 
 {-|
 Module      : Search
@@ -49,7 +49,7 @@ searchUntilDepth :: (Eq s, Ord i) => MaxDepth          -- ^ max depth to search
                                   -> (s -> [(s, Int)]) -- ^ generator of states
                                   -> s                 -- ^ initial state
                                   -> [s]               -- ^ returns list of states
-searchUntilDepth md p ct cg g s = join . maybeToList $ loop initFrontier
+searchUntilDepth !md p !ct cg g s = join . maybeToList $ loop initFrontier
     where initFrontier = insert (PQ.priorityQueueFrontier (\(RSNode _ x) -> p x)) [RSNode Root (SN.SNode s 0 0)]
           loop fr = do
             (cFr, rsNode@(RSNode _ currentNode@(SNode cs cd cc))) <- next fr
@@ -62,7 +62,7 @@ searchUntilDepth md p ct cg g s = join . maybeToList $ loop initFrontier
                 expGoal      = guard (ct == Expansion) >> findGoal cg (map SN.state newSNodes)
             case genGoal <|> expGoal of
                 Nothing   -> loop (insert cFr $ map (RSNode rsNode) newSNodes)
-                Just goal -> return $ map SN.state . RN.rsNodeToList $ rsNode
+                Just goal -> return $! map SN.state . RN.rsNodeToList $ rsNode
 
 -- | 'iterativeSearch' implements a search using a progressive depth until result is found
 iterativeSearch :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used

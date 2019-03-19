@@ -7,10 +7,15 @@ import Data.Search.SearchNode
 import Control.Lens
 
 data RSNode s = Root 
-              | RSNode
-                { root :: RSNode s
-                , node :: s
-                } deriving (Show,Eq)
+              | RSNode !(RSNode s) !s
+    deriving (Show,Eq)
+
+root :: RSNode s -> RSNode s
+root Root         = Root
+root (RSNode r _) = r
+
+node :: RSNode s -> s
+node (RSNode _ n) = n
 
 -- INSTANCES --
 
