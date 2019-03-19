@@ -42,6 +42,8 @@ data MaxDepth = Forever | Until Int deriving (Eq, Show)
 findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
 
+-- GENERIC SEARCH --
+
 -- | 'searchUntilDepth' function provides a high level customizable way to specific a search algorithm
 searchUntilDepth :: (Eq s, Ord i) => MaxDepth          -- ^ max depth to search
                                   -> (SNode s -> i)    -- ^ policy to be used
@@ -89,6 +91,8 @@ search :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used
                         -> [s]               -- ^ returns list of states
 search = searchUntilDepth Forever
 
+-- NOT INFORMED SEARCH --
+
 -- | 'breadth-first search' implementation
 breadthFirstSearch :: (Eq s) => (s -> Bool)       -- ^ function used to check if the goal is reached
                              -> (s -> [(s, Int)]) -- ^ generator of states
@@ -109,3 +113,19 @@ depthFirstSearch :: (Eq s) => (s -> Bool)       -- ^ function used to check if t
                            -> s                 -- ^ initial state
                            -> [s]               -- ^ returns list of states
 depthFirstSearch = search P.depthFirstPolicy Generation
+
+-- | 'greedy best first search' implementation
+greedyBestFirstSearch :: (Eq s) => (s -> Int)        -- ^ heuristic cost function
+                                -> (s -> Bool)       -- ^ function used to check if the goal is reached
+                                -> (s -> [(s, Int)]) -- ^ generator of states
+                                -> s                 -- ^ initial state
+                                -> [s]               -- ^ returns list of states
+greedyBestFirstSearch h = search (P.greedyBestFirstPolicy h) Generation
+
+-- | 'A* search' implementation
+aStarSearch :: (Eq s) => (s -> Int)        -- ^ heuristic cost function
+                      -> (s -> Bool)       -- ^ function used to check if the goal is reached
+                      -> (s -> [(s, Int)]) -- ^ generator of states
+                      -> s                 -- ^ initial state
+                      -> [s]               -- ^ returns list of states
+aStarSearch h = search (P.aStarPolicy h) Generation
