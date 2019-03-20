@@ -11,10 +11,10 @@ class Frontier f where
 
     -- | retrieve next value from the frontier queue, according to inserting
     -- order
-    next   :: f s -> Maybe (f s, s)
+    next   :: (Eq s) => f s -> Maybe (f s, s)
 
     -- | insert `s` elements in the Frontier according to ordering policy 
     -- provided by the Frontier building
-    insert :: f s -> [s] -> f s
+    insert :: (Eq s) => f s -> [s] -> f s
 
 

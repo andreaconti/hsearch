@@ -1,6 +1,7 @@
 module Data.Search.Internals.RootSearchNode 
     ( RSNode(..)
     , toList
+    , stateUnsafe
     )
 where
 
@@ -19,6 +20,9 @@ toList' acc (RSNode r s _ _) = toList' (s : acc) r
 
 toList :: RSNode a -> [a]
 toList = toList' []
+
+stateUnsafe :: RSNode a -> a
+stateUnsafe (RSNode _ s _ _) = s
 
 instance Eq a => Eq (RSNode a) where
     (RSNode _ s1 _ _) == (RSNode _ s2 _ _ ) = s1 == s2

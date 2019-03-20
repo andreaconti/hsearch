@@ -26,7 +26,6 @@ library:
   source-dirs: src
   dependencies:
   - pqueue
-  - lens >= 4.0 && <= 4.17
 
 tests:
   hsearch-test:

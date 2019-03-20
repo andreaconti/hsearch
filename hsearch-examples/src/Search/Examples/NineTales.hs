@@ -71,7 +71,19 @@ goal = fromLists
 
 heuristic t = 8 - (foldl' (\acc x -> if x == Card 0 then acc+1 else acc) 0 $ t - goal)
 
+-- UTILS --
+
 genTable :: [[Int]] -> Matrix Card
 genTable = fromLists . map (map (\x -> if x == 0 then Empty else Card x))
+
+randomTable' randoms ops   table | ops <= 0 = table
+randomTable' (r:rs)  ops table = let tables  = map fst (stateGenerator table)
+                                 in  randomTable' rs (ops-1) (tables !! r)
+
+randomTable n = do
+    g <- getStdGen
+    return $ randomTable' (randomRs (0, 1) g) n goal
+
+-- SOLVER --
 
 solve = iterativeAStarSearch heuristic (== goal) stateGenerator 
