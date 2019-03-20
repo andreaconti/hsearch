@@ -1,14 +1,19 @@
 {-# LANGUAGE RankNTypes, BangPatterns #-}
 
-{-|
-Module      : Search
-Description : Front-end module for search algorithms
-Copyright   : 
-License     : GPL-3
-Maintainer  : andreaconti
-Stability   : experimental
-Portability : Windows, POSIX
--}
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Search
+-- Copyright   :  Andrea Conti 2019
+-- License     :  BSD-3-Clause
+-- Maintainer  :  contiandrea96@gmail.com
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Implementation of AI search algorithms.
+-- TODO
+--
+--
+-----------------------------------------------------------------------------
 
 module Search 
     ( MaxDepth(..)
@@ -124,6 +129,14 @@ depthFirstSearch :: (Eq s) => (s -> Bool)       -- ^ function used to check if t
                            -> [s]               -- ^ returns list of states
 depthFirstSearch = search P.depthFirstPolicy Generation
 
+-- | search with @depthFirstSearch@ in iterative way, If in the state graph there are
+--   loops it will not loop forever.
+iterativeDepthFirstSearch:: (Eq s) => (s -> Bool)       -- ^ function used to check if the goal is reached
+                                   -> (s -> [(s, Int)]) -- ^ generator of states
+                                   -> s                 -- ^ initial state
+                                   -> [s]               -- ^ returns list of states
+iterativeDepthFirstSearch = iterativeSearch P.depthFirstPolicy Generation
+
 -- INFORMED SEARCH ALGORITHMS --
 
 -- | informed search algorithm which take into account only the value of the heuristic function in order to 
@@ -144,3 +157,11 @@ aStarSearch :: (Eq s) => (s -> Int)        -- ^ heuristic cost function
                       -> s                 -- ^ initial state
                       -> [s]               -- ^ returns list of states
 aStarSearch h = search (P.aStarPolicy h) Generation
+
+-- | search with @aStarSearch@ in iterative way
+iterativeAStarSearch :: (Eq s) => (s -> Int)        -- ^ heuristic cost function
+                               -> (s -> Bool)       -- ^ function used to check if the goal is reached
+                               -> (s -> [(s, Int)]) -- ^ generator of states
+                               -> s                 -- ^ initial state
+                               -> [s]               -- ^ returns list of states
+iterativeAStarSearch h = iterativeSearch (P.aStarPolicy h) Generation
