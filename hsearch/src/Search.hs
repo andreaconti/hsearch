@@ -23,6 +23,9 @@ module Search
     , breadthFirstSearch
     , uniformCostSearch
     , depthFirstSearch
+    , iterativeDepthFirstSearch
+    , aStarSearch
+    , iterativeAStarSearch
     ) where
 
 import qualified Data.Search.SearchNode as SN
@@ -53,6 +56,7 @@ findGoal f = listToMaybe . take 1 . filter f
 
 -- | /searchUntilDepth/ provides a high level interface for a generic Search Tree algorithm with custom max
 --   depth to search for
+{-# INLINE searchUntilDepth #-}
 searchUntilDepth :: (Eq s, Ord i) => MaxDepth          -- ^ max depth to search
                                   -> (SNode s -> i)    -- ^ policy to be used
                                   -> CheckTime         -- ^ when apply check goal
@@ -78,6 +82,7 @@ searchUntilDepth !md p !ct cg g s = join . maybeToList $ loop initFrontier
 
 -- | /iterativeSearch/ is equivalent to @searchUntilDepth@ called on increasing depths until the goal is found. Used with
 --   a depth first like policy can provide features similar to a search in amplitude (breadth first like policy)
+{-# INLINE iterativeSearch #-}
 iterativeSearch :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used
                                  -> CheckTime         -- ^ when apply check goal
                                  -> (s -> Bool)       -- ^ function used to check if the goal is reached
@@ -93,6 +98,7 @@ iterativeSearch p ct cg g s = let depths = [1..]
 
 -- | /searchUntilDepth/ provides a high level interface for a generic Search Tree algorithm which search until
 --   the goal is not found
+{-# INLINE search #-}
 search :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used
                         -> CheckTime         -- ^ when apply check goal
                         -> (s -> Bool)       -- ^ function used to check if the goal is reached
@@ -106,6 +112,7 @@ search = searchUntilDepth Forever
 -- | search with breadth first policy. The root node is expanded first, then all its childrens and so
 --   on, It's /complete/ and /optimal/ but very expensive in time and space complexity (/O(b^d)/ with
 --   b branching factor and d minimum depth goal)
+{-# INLINE breadthFirstSearch #-}
 breadthFirstSearch :: (Eq s) => (s -> Bool)       -- ^ function used to check if the goal is reached
                              -> (s -> [(s, Int)]) -- ^ generator of states
                              -> s                 -- ^ initial state
@@ -113,6 +120,7 @@ breadthFirstSearch :: (Eq s) => (s -> Bool)       -- ^ function used to check if
 breadthFirstSearch = search P.breadthFirstPolicy Generation
 
 -- | generalization of @breadthFirstSearch@ when paths costs are not all equals on the same level
+{-# INLINE uniformCostSearch #-}
 uniformCostSearch :: (Eq s) => (s -> Bool)       -- ^ function used to check if the goal is reached
                             -> (s -> [(s, Int)]) -- ^ generator of states
                             -> s                 -- ^ initial state
@@ -123,6 +131,7 @@ uniformCostSearch = search P.uniformCostPolicy Expansion
 --   /optimal/ but keeps only one route at a time in memory so it has a spatial complexity of /O(bm)/ with
 --   b branching factor and m max depth in the state space (can be infinite). If in the state graph there are
 --   loops then it will loop forever. Time complexity is /O(b^m)/.
+{-# INLINE depthFirstSearch #-}
 depthFirstSearch :: (Eq s) => (s -> Bool)       -- ^ function used to check if the goal is reached
                            -> (s -> [(s, Int)]) -- ^ generator of states
                            -> s                 -- ^ initial state
@@ -131,6 +140,7 @@ depthFirstSearch = search P.depthFirstPolicy Generation
 
 -- | search with @depthFirstSearch@ in iterative way, If in the state graph there are
 --   loops it will not loop forever.
+{-# INLINE iterativeDepthFirstSearch #-}
 iterativeDepthFirstSearch:: (Eq s) => (s -> Bool)       -- ^ function used to check if the goal is reached
                                    -> (s -> [(s, Int)]) -- ^ generator of states
                                    -> s                 -- ^ initial state
@@ -142,26 +152,29 @@ iterativeDepthFirstSearch = iterativeSearch P.depthFirstPolicy Generation
 -- | informed search algorithm which take into account only the value of the heuristic function in order to 
 --   choose next state, it is greedy cause it tries to reach the goal as fast as possible.It is not /optimal/
 --   and can not be /complete/, but really depends on the heuristic function.
+{-# INLINE greedyBestFirstSearch #-}
 greedyBestFirstSearch :: (Eq s) => (s -> Int)        -- ^ heuristic cost function
                                 -> (s -> Bool)       -- ^ function used to check if the goal is reached
                                 -> (s -> [(s, Int)]) -- ^ generator of states
                                 -> s                 -- ^ initial state
                                 -> [s]               -- ^ returns list of states
-greedyBestFirstSearch h = search (P.greedyBestFirstPolicy h) Generation
+greedyBestFirstSearch h = search (P.greedyBestFirstPolicy h) Expansion
 
 -- | A* search is a informed search algorithm which take into account both cost to reach a node and heuristic function
 --   in order to choose next state. It behaves as a @uniformCostSearch@ with a heuristic function
+{-# INLINE aStarSearch #-}
 aStarSearch :: (Eq s) => (s -> Int)        -- ^ heuristic cost function
                       -> (s -> Bool)       -- ^ function used to check if the goal is reached
                       -> (s -> [(s, Int)]) -- ^ generator of states
                       -> s                 -- ^ initial state
                       -> [s]               -- ^ returns list of states
-aStarSearch h = search (P.aStarPolicy h) Generation
+aStarSearch h = search (P.aStarPolicy h) Expansion
 
 -- | search with @aStarSearch@ in iterative way
+{-# INLINE iterativeAStarSearch #-}
 iterativeAStarSearch :: (Eq s) => (s -> Int)        -- ^ heuristic cost function
                                -> (s -> Bool)       -- ^ function used to check if the goal is reached
                                -> (s -> [(s, Int)]) -- ^ generator of states
                                -> s                 -- ^ initial state
                                -> [s]               -- ^ returns list of states
-iterativeAStarSearch h = iterativeSearch (P.aStarPolicy h) Generation
+iterativeAStarSearch h = iterativeSearch (P.aStarPolicy h) Expansion

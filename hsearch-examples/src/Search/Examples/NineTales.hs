@@ -8,26 +8,42 @@ import System.Random
 import Control.Monad
 
 import Search
-import Search.Policies
 
 -- model types
 
 type Table = Matrix Card
 type Pos = (Int, Int)
 
-data Card = Card Int | Empty
+data Card = Empty
+          | Card {-# UNPACK #-} !Int
     deriving Eq
 
 instance Show Card where
     show (Card x) = "[" ++ show x ++ "]"
     show Empty    = ""
 
--- ops and utils
+instance Num Card where
+    (+) (Card x) (Card y) = Card $ x + y
+    (+) Empty    (Card y) = Card y
+    (+) (Card x) Empty    = Card x
+    (+) Empty    Empty    = Empty
 
-startTable :: RandomGen g => g -> Table
-startTable g = let perms = permutations . (++ [Empty]) . map Card $ [1 .. 15]
-                   choosen = fst . randomR (0, 100) $ g
-               in  fromList 4 4 (perms !! choosen)
+    (*) (Card x) (Card y) = Card $ x * y
+    (*) Empty    _        = Empty
+    (*) _        Empty    = Empty
+    
+    abs (Card x) = Card $ abs x
+    abs Empty    = Empty
+    
+    signum (Card x) = Card $ signum x
+    signum Empty    = Empty
+
+    fromInteger = Card . fromInteger
+
+    negate (Card x) = Card $ negate x
+    negate Empty    = Empty
+
+-- PROBLEM MODEL --
 
 emptyPos :: Table -> Maybe Pos
 emptyPos = listToMaybe . join . toList . mapPos (\(r, c) v -> [(r, c) | v == Empty])
@@ -53,7 +69,9 @@ goal = fromLists
     , [Card 4, Card 5, Card 6]
     , [Card 7, Card 8, Empty ] ]
 
+heuristic t = 8 - (foldl' (\acc x -> if x == Card 0 then acc+1 else acc) 0 $ t - goal)
+
 genTable :: [[Int]] -> Matrix Card
 genTable = fromLists . map (map (\x -> if x == 0 then Empty else Card x))
 
-solve = iterativeSearch depthFirstPolicy Generation (== goal) stateGenerator 
+solve = iterativeAStarSearch heuristic (== goal) stateGenerator 

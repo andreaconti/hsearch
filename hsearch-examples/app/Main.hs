@@ -4,9 +4,9 @@ import Search.Examples.NineTales
 import Control.Monad
 
 start = genTable
-    [ [2, 0, 3]
-    , [5, 1, 6]
-    , [4, 7, 8] ]
+    [ [2,3,6]
+    , [1,7,5]
+    , [4,0,8] ]
 
 -- test NineTales
 main :: IO ()
