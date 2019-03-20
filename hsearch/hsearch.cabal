@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 44e87bd5fad886cdf09d29dda7e9582701cf6cbfe3ca3f955569162d85d4eac5
+-- hash: 8de18ef4be675e724537d5b57981b179d4c34b9c314820bfbd11fd548a27196d
 
 name:           hsearch
 version:        0.1.0.0
@@ -29,8 +29,9 @@ library
   exposed-modules:
       Data.Search.Frontier
       Data.Search.Frontier.PQFrontier
-      Data.Search.SearchNode
-      Search
+      Data.Search.Internals.RootSearchNode
+      Search.Algorithms
+      Search.Generics
       Search.Policies
   other-modules:
       Paths_hsearch

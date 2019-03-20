@@ -6,7 +6,7 @@ import Control.Monad
 start = genTable
     [ [2,3,6]
     , [1,7,5]
-    , [4,0,8] ]
+    , [8,0,4] ]
 
 -- test NineTales
 main :: IO ()

@@ -7,7 +7,7 @@ import Data.Vector (imap)
 import System.Random
 import Control.Monad
 
-import Search
+import Search.Algorithms
 
 -- model types
 

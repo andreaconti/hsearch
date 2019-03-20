@@ -4,17 +4,11 @@ module Search.Policies
     , depthFirstPolicy
     , greedyBestFirstPolicy
     , aStarPolicy
-    , CheckTime(..)
     ) where
 
-import qualified Data.Search.SearchNode as SN
-import           Data.Search.SearchNode (SNode(..))
 import           Data.Function (on)
-
--- | To specify if the goal reached check must be done at node generation
--- or at goal expansion
-data CheckTime = Generation | Expansion
-    deriving Eq
+import qualified Search.Generics as SN
+import           Search.Generics (SNode)
 
 -- NOT INFORMED POLICIES --
 
@@ -37,9 +31,9 @@ depthFirstPolicy n = - (SN.depth n)
 
 {-# INLINE greedyBestFirstPolicy #-}
 greedyBestFirstPolicy :: (s -> Int) -> SNode s -> Int
-greedyBestFirstPolicy h (SNode _ s _ _) = h s
+greedyBestFirstPolicy h node = h (SN.state node)
 
 {-# INLINE aStarPolicy #-}
 aStarPolicy :: (s -> Int) -> SNode s -> Int
-aStarPolicy h (SNode _ s _ c) = h s + c
+aStarPolicy h node = h (SN.state node) + SN.cost node
 

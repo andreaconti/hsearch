@@ -6,8 +6,6 @@ module Data.Search.Frontier.PQFrontier where
 import qualified Data.PQueue.Prio.Min as PQ
 import           Data.PQueue.Prio.Min (MinPQueue)
 import           Data.Search.Frontier
-import qualified Data.Search.SearchNode as SN
-import           Data.Search.SearchNode (SNode)
 
 -- | PQFrontier implements Frontier with a Priority Queue
 data PQFrontier i s = PQFrontier {-# UNPACK #-} !(PQ.MinPQueue i s) -- ^ Priority Queue used

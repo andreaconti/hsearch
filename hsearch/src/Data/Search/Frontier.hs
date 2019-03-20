@@ -6,9 +6,6 @@ module Data.Search.Frontier where
  - stati e delle operazioni necessarie ai diversi pattern di ricerca
 -}
 
-import qualified Data.Search.SearchNode as SN
-import           Data.Search.SearchNode (SNode)
-
 -- | Frontier definition
 class Frontier f where
 
