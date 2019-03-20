@@ -2,18 +2,27 @@ module Data.Search.SearchNode where
 
 -- | Search Node definition, it contains a state, the depth in the
 --   search tree and finally the total cost to reach the state
-data SNode a = SNode !a
+data SNode a = Root
+             | SNode !(SNode a)
+                     !a
                      {-# UNPACK #-} !Int
                      {-# UNPACK #-} !Int
 
 state :: SNode a -> a
-state (SNode s _ _) = s
+state (SNode _ s _ _) = s
 
 depth :: SNode a -> Int
-depth (SNode _ d _) = d
+depth (SNode _ _ d _) = d
 
 cost :: SNode a -> Int
-cost (SNode _ _ c) = c
+cost (SNode _ _ _ c) = c
+
+toList' :: [a] -> SNode a -> [a]
+toList' acc Root            = acc
+toList' acc (SNode r s _ _) = toList' (s : acc) r 
+
+toList :: SNode a -> [a]
+toList = toList' []
 
 instance Eq a => Eq (SNode a) where
     snode1 == snode2 = let s1 = state snode1

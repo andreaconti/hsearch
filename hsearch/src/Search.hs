@@ -30,8 +30,6 @@ module Search
 
 import qualified Data.Search.SearchNode as SN
 import           Data.Search.SearchNode (SNode(..))
-import qualified Data.Search.Impl.RootSearchNode as RN
-import           Data.Search.Impl.RootSearchNode (RSNode(..))
 import           Data.Search.Frontier (Frontier, next, insert)
 import qualified Data.Search.Frontier.PQFrontier as PQ
 
@@ -65,20 +63,20 @@ searchUntilDepth :: (Eq s, Ord i) => MaxDepth          -- ^ max depth to search
                                   -> s                 -- ^ initial state
                                   -> [s]               -- ^ returns list of states
 searchUntilDepth !md p !ct cg g s = join . maybeToList $ loop initFrontier
-    where initFrontier = insert (PQ.priorityQueueFrontier (\(RSNode _ x) -> p x)) [RSNode Root (SN.SNode s 0 0)]
+    where initFrontier = insert (PQ.priorityQueueFrontier p) [SN.SNode SN.Root s 0 0]
           loop fr = do
-            (cFr, rsNode@(RSNode _ currentNode@(SNode cs cd cc))) <- next fr
+            (cFr, currentNode@(SNode _ cs cd cc)) <- next fr
             let 
                 checkDepth Forever _   = True
                 checkDepth (Until d) x = x < d && d > 0
 
                 newStates    = g cs
-                newSNodes    = guard (checkDepth md cd) >> map (\(ns, nc) -> SNode ns (cd+1) (nc+cc)) newStates
+                newSNodes    = guard (checkDepth md cd) >> map (\(ns, nc) -> SNode currentNode ns (cd+1) (nc+cc)) newStates
                 genGoal      = guard (ct == Generation && cg cs) >> (Just $! cs)
                 expGoal      = guard (ct == Expansion) >> findGoal cg (map fst newStates)
             case genGoal <|> expGoal of
-                Nothing   -> loop (insert cFr $ map (RSNode rsNode) newSNodes)
-                Just goal -> return $! map SN.state . RN.rsNodeToList $ rsNode
+                Nothing   -> loop (insert cFr newSNodes)
+                Just goal -> return $! SN.toList currentNode
 
 -- | /iterativeSearch/ is equivalent to @searchUntilDepth@ called on increasing depths until the goal is found. Used with
 --   a depth first like policy can provide features similar to a search in amplitude (breadth first like policy)

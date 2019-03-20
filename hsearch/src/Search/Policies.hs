@@ -37,9 +37,9 @@ depthFirstPolicy n = - (SN.depth n)
 
 {-# INLINE greedyBestFirstPolicy #-}
 greedyBestFirstPolicy :: (s -> Int) -> SNode s -> Int
-greedyBestFirstPolicy h (SNode s _ _) = h s
+greedyBestFirstPolicy h (SNode _ s _ _) = h s
 
 {-# INLINE aStarPolicy #-}
 aStarPolicy :: (s -> Int) -> SNode s -> Int
-aStarPolicy h (SNode s _ c) = h s + c
+aStarPolicy h (SNode _ s _ c) = h s + c
 

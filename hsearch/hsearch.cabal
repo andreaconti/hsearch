@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: dc3693ab3b6ba01eb803d616d5d111edc2bf29d57200cf7fd584527e736f23e7
+-- hash: 44e87bd5fad886cdf09d29dda7e9582701cf6cbfe3ca3f955569162d85d4eac5
 
 name:           hsearch
 version:        0.1.0.0
@@ -29,7 +29,6 @@ library
   exposed-modules:
       Data.Search.Frontier
       Data.Search.Frontier.PQFrontier
-      Data.Search.Impl.RootSearchNode
       Data.Search.SearchNode
       Search
       Search.Policies
