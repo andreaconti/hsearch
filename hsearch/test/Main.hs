@@ -1,7 +1,7 @@
 module Main where
 
-import qualified FrontierImplTests as F
+import qualified PQFringeTests as F
 
 main :: IO ()
 main = do
-    F.main
+    F.test
