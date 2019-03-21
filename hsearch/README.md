@@ -75,8 +75,7 @@ for maximum control can be used `genericSearch` which allows to change Fridge (2
 output. For instance if is useful to skip already expanded nodes (avoiding loops) with genericSearch is possibile:
 
 ~~~haskell
-
-depthFirstSearch' = genericSearch 
-
-
+import qualified Data.AI.Search.Fridge.PrioritySetFringe as PS
+-- equivalent to depthFirstSearch but skips yet expanded nodes cause different Fridge
+depthFirstSearch' = genericSearch PS.empty state Forever depthFirstSearch Generation
 ~~~
