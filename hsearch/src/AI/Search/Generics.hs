@@ -20,6 +20,7 @@ module AI.Search.Generics
     , CheckTime(..)
     , SNode
     , state, cost, depth
+    , genericSearch
     , searchUntilDepth
     , iterativeSearch
     , search
@@ -40,18 +41,18 @@ import           Data.Maybe (maybeToList, listToMaybe)
 -- | max depth to search for
 data MaxDepth = Forever | Until !Int deriving (Eq, Show)
 
-newtype SNode s = SNode { getRSNode :: RSNode s }
+newtype SNode s p = SNode { getRSNode :: RSNode s p }
 
 {-# INLINE state #-}
-state :: SNode s -> s
+state :: SNode s p -> s
 state (SNode (RSNode _ s _ _)) = s
 
 {-# INLINE depth #-}
-depth :: SNode s -> Int
+depth :: SNode s p -> Int
 depth (SNode (RSNode _ _ d _)) = d
 
 {-# INLINE cost #-}
-cost :: SNode s -> Int
+cost :: (Num p) => SNode s p -> p
 cost (SNode (RSNode _ _ _ c)) = c
 
 -- | To specify if the goal reached check must be done at node generation
@@ -67,25 +68,25 @@ findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
 
 {-# INLINE toSNodeList' #-}
-toSNodeList' :: [SNode a] -> RSNode a -> [SNode a]
+toSNodeList' :: [SNode a p] -> RSNode a p -> [SNode a p]
 toSNodeList' acc Root             = acc
 toSNodeList' acc rsnode@(RSNode r _ _ _) = toSNodeList' (SNode rsnode : acc) r 
 
 {-# INLINE toSNodeList #-}
-toSNodeList :: RSNode a -> [SNode a]
+toSNodeList :: RSNode a p -> [SNode a p]
 toSNodeList = toSNodeList' []
 
 -- GENERIC SEARCH --
 
 {-# INLINE genericSearch #-}
-genericSearch :: (Frontier f, Eq s) => f (RSNode s)      -- ^ frontier used
-                                    -> (SNode s -> a)    -- ^ result function
-                                    -> MaxDepth          -- ^ max depth to search
-                                    -> CheckTime         -- ^ when apply check goal
-                                    -> (s -> Bool)       -- ^ function used to check if the goal is reached
-                                    -> (s -> [(s, Int)]) -- ^ generator of states
-                                    -> s                 -- ^ initial state
-                                    -> [a]               -- ^ returns list of states
+genericSearch :: (Frontier f, Eq s, Num p) => f (RSNode s p)   -- ^ frontier used
+                                    -> (SNode s p -> a)        -- ^ result function
+                                    -> MaxDepth                -- ^ max depth to search
+                                    -> CheckTime               -- ^ when apply check goal
+                                    -> (s -> Bool)             -- ^ function used to check if the goal is reached
+                                    -> (s -> [(s, p)])         -- ^ generator of states
+                                    -> s                       -- ^ initial state
+                                    -> [a]                     -- ^ returns list of states
 genericSearch frontier rf !md !ct cg g s = join . maybeToList $ loop initFrontier
     where initFrontier = insert frontier [RSN.RSNode RSN.Root s 0 0]
           loop fr = do
@@ -102,27 +103,28 @@ genericSearch frontier rf !md !ct cg g s = join . maybeToList $ loop initFrontie
                 Nothing   -> loop (insert cFr newRSNodes)
                 Just goal -> return $! map rf (toSNodeList goal)
 
+
 -- | /searchUntilDepth/ provides a high level interface for a generic Search Tree algorithm with custom max
 --   depth to search for
 {-# INLINE searchUntilDepth #-}
-searchUntilDepth :: (Eq s, Ord i) => MaxDepth          -- ^ max depth to search
-                                  -> (SNode s -> i)    -- ^ policy to be used
-                                  -> CheckTime         -- ^ when apply check goal
-                                  -> (s -> Bool)       -- ^ function used to check if the goal is reached
-                                  -> (s -> [(s, Int)]) -- ^ generator of states
-                                  -> s                 -- ^ initial state
-                                  -> [s]               -- ^ returns list of states
+searchUntilDepth :: (Eq s, Ord i, Num p) => MaxDepth     -- ^ max depth to search
+                                  -> (SNode s p -> i)    -- ^ policy to be used
+                                  -> CheckTime           -- ^ when apply check goal
+                                  -> (s -> Bool)         -- ^ function used to check if the goal is reached
+                                  -> (s -> [(s, p)])     -- ^ generator of states
+                                  -> s                   -- ^ initial state
+                                  -> [s]                 -- ^ returns list of states
 searchUntilDepth !md p = genericSearch (PQ.priorityQueueFrontier (p . SNode)) state md
 
 -- | /iterativeSearch/ is equivalent to @searchUntilDepth@ called on increasing depths until the goal is found. Used with
 --   a depth first like policy can provide features similar to a search in amplitude (breadth first like policy)
 {-# INLINE iterativeSearch #-}
-iterativeSearch :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used
-                                 -> CheckTime         -- ^ when apply check goal
-                                 -> (s -> Bool)       -- ^ function used to check if the goal is reached
-                                 -> (s -> [(s, Int)]) -- ^ generator of states
-                                 -> s                 -- ^ initial state
-                                 -> [s]               -- ^ returns list of states
+iterativeSearch :: (Eq s, Ord i, Num p) => (SNode s p -> i)  -- ^ policy to be used
+                                 -> CheckTime                -- ^ when apply check goal
+                                 -> (s -> Bool)              -- ^ function used to check if the goal is reached
+                                 -> (s -> [(s, p)])          -- ^ generator of states
+                                 -> s                        -- ^ initial state
+                                 -> [s]                      -- ^ returns list of states
 iterativeSearch p ct cg g s = let depths = [1..]
                                   results = map (\d -> searchUntilDepth (Until d) p ct cg g s) depths 
                                   find []      = []
@@ -133,10 +135,10 @@ iterativeSearch p ct cg g s = let depths = [1..]
 -- | /searchUntilDepth/ provides a high level interface for a generic Search Tree algorithm which search until
 --   the goal is not found
 {-# INLINE search #-}
-search :: (Eq s, Ord i) => (SNode s -> i)    -- ^ policy to be used
-                        -> CheckTime         -- ^ when apply check goal
-                        -> (s -> Bool)       -- ^ function used to check if the goal is reached
-                        -> (s -> [(s, Int)]) -- ^ generator of states
-                        -> s                 -- ^ initial state
-                        -> [s]               -- ^ returns list of states
+search :: (Eq s, Ord i, Num p) => (SNode s p -> i)  -- ^ policy to be used
+                        -> CheckTime                -- ^ when apply check goal
+                        -> (s -> Bool)              -- ^ function used to check if the goal is reached
+                        -> (s -> [(s, p)])          -- ^ generator of states
+                        -> s                        -- ^ initial state
+                        -> [s]                      -- ^ returns list of states
 search = searchUntilDepth Forever
