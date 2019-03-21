@@ -1,10 +1,10 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 45c0a5e7269445a091e2a414786ac695920cb9550976574fe2799a496b6db6e7
+-- hash: 41abcb426364e0947d3a5f0b9fb7c73b198961f22a876fc09e0b1d51f93babb8
 
 name:           hsearch
 version:        0.1.0.0
@@ -30,9 +30,9 @@ library
       AI.Search.Algorithms
       AI.Search.Generics
       AI.Search.Policies
-      Data.AI.Search.Frontier
-      Data.AI.Search.Frontier.PQFrontier
-      Data.AI.Search.Frontier.PrioritySetFrontier
+      Data.AI.Search.Fringe
+      Data.AI.Search.Fringe.PQFringe
+      Data.AI.Search.Fringe.PrioritySetFringe
       Data.AI.Search.Internals.RootSearchNode
   other-modules:
       Paths_hsearch
@@ -51,7 +51,7 @@ test-suite hsearch-test
       Paths_hsearch
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -O
   build-depends:
       HUnit
     , base >=4.7 && <5

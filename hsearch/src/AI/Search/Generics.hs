@@ -29,8 +29,8 @@ module AI.Search.Generics
 import qualified Data.AI.Search.Internals.RootSearchNode as RSN
 import           Data.AI.Search.Internals.RootSearchNode (RSNode(..))
 
-import qualified Data.AI.Search.Frontier.PQFrontier as PQ
-import           Data.AI.Search.Frontier (Frontier, next, insert)
+import qualified Data.AI.Search.Fringe.PQFringe as PQ
+import           Data.AI.Search.Fringe (Fringe, next, insert)
 
 import           Control.Monad 
 import           Control.Applicative
@@ -41,7 +41,7 @@ import           Data.Maybe (maybeToList, listToMaybe)
 -- | max depth to search for
 data MaxDepth = Forever | Until !Int deriving (Eq, Show)
 
-newtype SNode s p = SNode { getRSNode :: RSNode s p }
+newtype SNode s p = SNode { getRSNode :: RSNode s p } deriving (Eq)
 
 {-# INLINE state #-}
 state :: SNode s p -> s
@@ -52,7 +52,7 @@ depth :: SNode s p -> Int
 depth (SNode (RSNode _ _ d _)) = d
 
 {-# INLINE cost #-}
-cost :: (Num p) => SNode s p -> p
+cost :: SNode s p -> p
 cost (SNode (RSNode _ _ _ c)) = c
 
 -- | To specify if the goal reached check must be done at node generation
@@ -79,7 +79,7 @@ toSNodeList = toSNodeList' []
 -- GENERIC SEARCH --
 
 {-# INLINE genericSearch #-}
-genericSearch :: (Frontier f, Eq s, Num p) => f (RSNode s p)   -- ^ frontier used
+genericSearch :: (Fringe f, Eq s, Num p) => f (RSNode s p)   -- ^ frontier used
                                     -> (SNode s p -> a)        -- ^ result function
                                     -> MaxDepth                -- ^ max depth to search
                                     -> CheckTime               -- ^ when apply check goal
@@ -87,8 +87,8 @@ genericSearch :: (Frontier f, Eq s, Num p) => f (RSNode s p)   -- ^ frontier use
                                     -> (s -> [(s, p)])         -- ^ generator of states
                                     -> s                       -- ^ initial state
                                     -> [a]                     -- ^ returns list of states
-genericSearch frontier rf !md !ct cg g s = join . maybeToList $ loop initFrontier
-    where initFrontier = insert frontier [RSN.RSNode RSN.Root s 0 0]
+genericSearch frontier rf !md !ct cg g s = join . maybeToList $ loop initFringe
+    where initFringe = insert frontier [RSN.RSNode RSN.Root s 0 0]
           loop fr = do
             (cFr, currentNode@(RSNode _ cs cd cc)) <- next fr
             let 
@@ -114,7 +114,7 @@ searchUntilDepth :: (Eq s, Ord i, Num p) => MaxDepth     -- ^ max depth to searc
                                   -> (s -> [(s, p)])     -- ^ generator of states
                                   -> s                   -- ^ initial state
                                   -> [s]                 -- ^ returns list of states
-searchUntilDepth !md p = genericSearch (PQ.priorityQueueFrontier (p . SNode)) state md
+searchUntilDepth !md p = genericSearch (PQ.priorityQueueFringe (p . SNode)) state md
 
 -- | /iterativeSearch/ is equivalent to @searchUntilDepth@ called on increasing depths until the goal is found. Used with
 --   a depth first like policy can provide features similar to a search in amplitude (breadth first like policy)

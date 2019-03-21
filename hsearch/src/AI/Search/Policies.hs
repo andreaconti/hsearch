@@ -14,23 +14,23 @@ import           AI.Search.Generics (SNode)
 
 -- | Breadth-First Search policy implementation, returns the depth
 {-# INLINE breadthFirstPolicy #-}
-breadthFirstPolicy :: (Num p) => SNode s p -> Int
+breadthFirstPolicy :: SNode s p -> Int
 breadthFirstPolicy = SN.depth
 
 -- | Uniform-Cost Search policy implementation
 {-# INLINE uniformCostPolicy #-}
-uniformCostPolicy :: (Num p) => SNode s p -> p
+uniformCostPolicy :: SNode s p -> p
 uniformCostPolicy = SN.cost
 
 -- | Depth-First Search policy implementation
 {-# INLINE depthFirstPolicy #-}
-depthFirstPolicy :: (Num p) => SNode s p -> Int
+depthFirstPolicy :: SNode s p -> Int
 depthFirstPolicy n = - (SN.depth n)
 
 -- INFORMED (HEURISTIC) POLICIES --
 
 {-# INLINE greedyBestFirstPolicy #-}
-greedyBestFirstPolicy :: (s -> p) -> SNode s p -> p
+greedyBestFirstPolicy :: (Ord p) => (s -> p) -> SNode s p -> p
 greedyBestFirstPolicy h node = h (SN.state node)
 
 {-# INLINE aStarPolicy #-}
