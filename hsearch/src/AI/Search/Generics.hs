@@ -79,16 +79,17 @@ toSNodeList = toSNodeList' []
 -- GENERIC SEARCH --
 
 {-# INLINE genericSearch #-}
-genericSearch :: (Fringe f, Eq s, Num p) => f (RSNode s p)   -- ^ frontier used
-                                    -> (SNode s p -> a)        -- ^ result function
-                                    -> MaxDepth                -- ^ max depth to search
-                                    -> CheckTime               -- ^ when apply check goal
-                                    -> (s -> Bool)             -- ^ function used to check if the goal is reached
-                                    -> (s -> [(s, p)])         -- ^ generator of states
-                                    -> s                       -- ^ initial state
-                                    -> [a]                     -- ^ returns list of states
-genericSearch frontier rf !md !ct cg g s = join . maybeToList $ loop initFringe
-    where initFringe = insert frontier [RSN.RSNode RSN.Root s 0 0]
+genericSearch :: (Fringe f, Eq s, Num p, Ord i) => f i (RSNode s p)        -- ^ frontier used
+                                                -> (SNode s p -> a)        -- ^ result function
+                                                -> MaxDepth                -- ^ max depth to search
+                                                -> (SNode s p -> i)        -- ^ policy to be used
+                                                -> CheckTime               -- ^ when apply check goal
+                                                -> (s -> Bool)             -- ^ function used to check if the goal is reached
+                                                -> (s -> [(s, p)])         -- ^ generator of states
+                                                -> s                       -- ^ initial state
+                                                -> [a]                     -- ^ returns list of states
+genericSearch frontier rf !md p !ct cg g s = join . maybeToList $ loop initFringe
+    where initFringe = insert frontier (p . SNode) [RSN.RSNode RSN.Root s 0 0]
           loop fr = do
             (cFr, currentNode@(RSNode _ cs cd cc)) <- next fr
             let 
@@ -100,7 +101,7 @@ genericSearch frontier rf !md !ct cg g s = join . maybeToList $ loop initFringe
                 genGoal      = guard (ct == Generation && cg cs) >> (Just $! currentNode)
                 expGoal      = guard (ct == Expansion) >> findGoal (cg . RSN.stateUnsafe) newRSNodes
             case genGoal <|> expGoal of
-                Nothing   -> loop (insert cFr newRSNodes)
+                Nothing   -> loop (insert cFr (p . SNode) newRSNodes)
                 Just goal -> return $! map rf (toSNodeList goal)
 
 
@@ -114,7 +115,7 @@ searchUntilDepth :: (Eq s, Ord i, Num p) => MaxDepth     -- ^ max depth to searc
                                   -> (s -> [(s, p)])     -- ^ generator of states
                                   -> s                   -- ^ initial state
                                   -> [s]                 -- ^ returns list of states
-searchUntilDepth !md p = genericSearch (PQ.priorityQueueFringe (p . SNode)) state md
+searchUntilDepth = genericSearch PQ.empty state
 
 -- | /iterativeSearch/ is equivalent to @searchUntilDepth@ called on increasing depths until the goal is found. Used with
 --   a depth first like policy can provide features similar to a search in amplitude (breadth first like policy)

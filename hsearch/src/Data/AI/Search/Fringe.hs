@@ -11,10 +11,10 @@ class Fringe f where
 
     -- | retrieve next value from the frontier queue, according to inserting
     -- order
-    next   :: (Eq s) => f s -> Maybe (f s, s)
+    next   :: (Eq s, Ord i) => f i s -> Maybe (f i s, s)
 
     -- | insert `s` elements in the Fringe according to ordering policy 
     -- provided by the Fringe building
-    insert :: (Eq s) => f s -> [s] -> f s
+    insert :: (Eq s, Ord i) => f i s -> (s -> i) -> [s] -> f i s
 
 

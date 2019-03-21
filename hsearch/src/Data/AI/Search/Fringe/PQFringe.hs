@@ -9,22 +9,21 @@ import           Data.AI.Search.Fringe
 
 -- | PQFringe implements Fringe with a Priority Queue
 data PQFringe i s = PQFringe !(PQ.MinPQueue i s) -- ^ Priority Queue used
-                              (s -> i)
 
-instance (Ord i) => Fringe (PQFringe i) where
+instance Fringe PQFringe where
     
     {-# INLINABLE next #-}
-    next (PQFringe queue ordering) =
+    next (PQFringe queue) =
         let minNode  = snd <$> PQ.getMin queue
             newQueue = PQ.deleteMin queue
-        in  (,) <$> (Just $! PQFringe newQueue ordering) <*> minNode
+        in  (,) <$> (Just $! PQFringe newQueue) <*> minNode
 
     {-# INLINABLE insert #-}
-    insert (PQFringe q ord) ns =
+    insert (PQFringe q) ord ns =
         let keys     = map ord ns
             newQueue = PQ.fromList (zip keys ns) `PQ.union` q
-        in  PQFringe newQueue ord
+        in  PQFringe newQueue
 
 -- | build a \PQFringe\ to use
-priorityQueueFringe :: (Ord i, Eq s) => (s -> i) -> PQFringe i s
-priorityQueueFringe = PQFringe PQ.empty
+empty :: PQFringe i s
+empty = PQFringe PQ.empty
