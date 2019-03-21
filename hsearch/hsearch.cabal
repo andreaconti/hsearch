@@ -1,10 +1,10 @@
-cabal-version: 1.12
+cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.31.1.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 97ac929b5d769afd44814636c198a27a327f99a74c9c0d8d51fc8c7373b222ff
+-- hash: b20f7df0e4cb61020832d767b972a387037e81449ea8507333f4a9c8dbd6feb3
 
 name:           hsearch
 version:        0.1.0.0
@@ -14,7 +14,7 @@ bug-reports:    https://github.com/andreaconti/hsearch/issues
 author:         Andrea Conti
 maintainer:     contiandrea96@gmail.com
 copyright:      2019 Andrea Conti
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -27,13 +27,13 @@ source-repository head
 
 library
   exposed-modules:
-      Data.Search.Frontier
-      Data.Search.Frontier.PQFrontier
-      Data.Search.Frontier.SkipEqPQFrontier
-      Data.Search.Internals.RootSearchNode
-      Search.Algorithms
-      Search.Generics
-      Search.Policies
+      AI.Search.Algorithms
+      AI.Search.Generics
+      AI.Search.Policies
+      Data.AI.Search.Frontier
+      Data.AI.Search.Frontier.PQFrontier
+      Data.AI.Search.Frontier.SkipEqPQFrontier
+      Data.AI.Search.Internals.RootSearchNode
   other-modules:
       Paths_hsearch
   hs-source-dirs:
@@ -48,8 +48,6 @@ test-suite hsearch-test
   main-is: Main.hs
   other-modules:
       FrontierImplTests
-      SearchNodeTests
-      SearchTests
       Paths_hsearch
   hs-source-dirs:
       test

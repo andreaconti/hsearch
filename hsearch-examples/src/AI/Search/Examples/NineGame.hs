@@ -1,4 +1,4 @@
-module Search.Examples.NineTales where
+module AI.Search.Examples.NineGame where
 
 import Data.Matrix
 import Data.Maybe
@@ -7,7 +7,7 @@ import Data.Vector (imap)
 import System.Random
 import Control.Monad
 
-import Search.Algorithms
+import AI.Search.Algorithms
 
 -- model types
 

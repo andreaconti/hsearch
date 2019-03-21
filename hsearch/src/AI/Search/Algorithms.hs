@@ -1,4 +1,4 @@
-module Search.Algorithms 
+module AI.Search.Algorithms 
     ( breadthFirstSearch
     , uniformCostSearch
     , depthFirstSearch
@@ -13,8 +13,8 @@ module Search.Algorithms
     , iterativeAStarSearch'
     ) where
 
-import           Search.Generics
-import qualified Search.Policies as P
+import           AI.Search.Generics
+import qualified AI.Search.Policies as P
 
 -- TREE SEARCH --
 

@@ -15,7 +15,7 @@
 --
 -----------------------------------------------------------------------------
 
-module Search.Generics
+module AI.Search.Generics
     ( MaxDepth(..)
     , CheckTime(..)
     , SNode
@@ -28,12 +28,12 @@ module Search.Generics
     , search'
     ) where
 
-import qualified Data.Search.Internals.RootSearchNode as RSN
-import           Data.Search.Internals.RootSearchNode (RSNode(..))
+import qualified Data.AI.Search.Internals.RootSearchNode as RSN
+import           Data.AI.Search.Internals.RootSearchNode (RSNode(..))
 
-import qualified Data.Search.Frontier.PQFrontier as PQ
-import qualified Data.Search.Frontier.SkipEqPQFrontier as SK
-import           Data.Search.Frontier (Frontier, next, insert)
+import qualified Data.AI.Search.Frontier.PQFrontier as PQ
+import qualified Data.AI.Search.Frontier.SkipEqPQFrontier as SK
+import           Data.AI.Search.Frontier (Frontier, next, insert)
 
 import           Control.Monad 
 import           Control.Applicative

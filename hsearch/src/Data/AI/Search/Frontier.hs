@@ -1,6 +1,6 @@
 {-# LANGUAGE RankNTypes #-}
 
-module Data.Search.Frontier where
+module Data.AI.Search.Frontier where
 
 {- Definizione della struttura base degli stati, dell'albero degli
  - stati e delle operazioni necessarie ai diversi pattern di ricerca

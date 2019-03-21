@@ -1,7 +1,7 @@
 name:                hsearch
 version:             0.1.0.0
 github:              "andreaconti/hsearch"
-license:             BSD3
+license:             BSD-3-Clause
 author:              "Andrea Conti"
 maintainer:          "contiandrea96@gmail.com"
 copyright:           "2019 Andrea Conti"

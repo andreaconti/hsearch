@@ -1,10 +1,10 @@
 module FrontierImplTests where
 
 import Test.HUnit
-import Data.Search.Frontier
-import Data.Search.Frontier.PQFrontier
+import Data.AI.Search.Frontier
+import Data.AI.Search.Frontier.PQFrontier
 import Search.Policies
-import Data.Search.SearchNode
+import Data.AI.Search.SearchNode
 import Control.Monad.ST
 import Data.STRef
 import Data.Maybe

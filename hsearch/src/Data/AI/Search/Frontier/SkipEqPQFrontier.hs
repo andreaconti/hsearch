@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module Data.Search.Frontier.SkipEqPQFrontier
+module Data.AI.Search.Frontier.SkipEqPQFrontier
     ( SKPFrontier
     , skipPriorityFrontier
     ) where
@@ -9,8 +9,8 @@ module Data.Search.Frontier.SkipEqPQFrontier
 
 import qualified Data.PQueue.Prio.Min as PQ
 import           Data.PQueue.Prio.Min (MinPQueue)
-import           Data.Search.Frontier
-import Data.List
+import           Data.AI.Search.Frontier
+import           Data.List
 
 -- | PQFrontier implements Frontier with a Priority Queue
   

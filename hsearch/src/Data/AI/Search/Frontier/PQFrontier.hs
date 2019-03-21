@@ -1,15 +1,15 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module Data.Search.Frontier.PQFrontier where
+module Data.AI.Search.Frontier.PQFrontier where
 
 import qualified Data.PQueue.Prio.Min as PQ
 import           Data.PQueue.Prio.Min (MinPQueue)
-import           Data.Search.Frontier
+import           Data.AI.Search.Frontier
 
 -- | PQFrontier implements Frontier with a Priority Queue
-data PQFrontier i s = PQFrontier {-# UNPACK #-} !(PQ.MinPQueue i s) -- ^ Priority Queue used
-                                                 (s -> i)           -- ^ priority policy used
+data PQFrontier i s = PQFrontier !(PQ.MinPQueue i s) -- ^ Priority Queue used
+                                  (s -> i)           -- ^ priority policy used
 
 instance (Ord i) => Frontier (PQFrontier i) where
     

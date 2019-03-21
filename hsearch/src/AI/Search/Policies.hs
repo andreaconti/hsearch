@@ -1,4 +1,4 @@
-module Search.Policies 
+module AI.Search.Policies 
     ( breadthFirstPolicy
     , uniformCostPolicy
     , depthFirstPolicy
@@ -7,8 +7,8 @@ module Search.Policies
     ) where
 
 import           Data.Function (on)
-import qualified Search.Generics as SN
-import           Search.Generics (SNode)
+import qualified AI.Search.Generics as SN
+import           AI.Search.Generics (SNode)
 
 -- NOT INFORMED POLICIES --
 

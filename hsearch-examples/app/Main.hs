@@ -1,6 +1,6 @@
 module Main where
 
-import Search.Examples.NineTales
+import AI.Search.Examples.NineGame
 import Control.Monad
 
 -- test NineTales

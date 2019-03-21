@@ -1,4 +1,4 @@
-module Data.Search.Internals.RootSearchNode 
+module Data.AI.Search.Internals.RootSearchNode 
     ( RSNode(..)
     , toList
     , stateUnsafe
@@ -8,10 +8,10 @@ where
 -- | Search Node definition, it contains a state, the depth in the
 --   search tree and finally the total cost to reach the state
 data RSNode a = Root
-             | RSNode !(RSNode a)
-                     !a
-                     {-# UNPACK #-} !Int
-                     {-# UNPACK #-} !Int
+              | RSNode !(RSNode a)
+                       !a
+                       {-# UNPACK #-} !Int
+                       {-# UNPACK #-} !Int
 
 
 toList' :: [a] -> RSNode a -> [a]
