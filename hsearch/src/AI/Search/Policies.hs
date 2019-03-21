@@ -27,7 +27,7 @@ uniformCostPolicy = SN.cost
 depthFirstPolicy :: (Eq s) => SNode s -> Int
 depthFirstPolicy n = - (SN.depth n)
 
--- INFORMED (HEURISTIC) SEARCH --
+-- INFORMED (HEURISTIC) POLICIES --
 
 {-# INLINE greedyBestFirstPolicy #-}
 greedyBestFirstPolicy :: (s -> Int) -> SNode s -> Int

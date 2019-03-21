@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b20f7df0e4cb61020832d767b972a387037e81449ea8507333f4a9c8dbd6feb3
+-- hash: 45c0a5e7269445a091e2a414786ac695920cb9550976574fe2799a496b6db6e7
 
 name:           hsearch
 version:        0.1.0.0
@@ -32,7 +32,7 @@ library
       AI.Search.Policies
       Data.AI.Search.Frontier
       Data.AI.Search.Frontier.PQFrontier
-      Data.AI.Search.Frontier.SkipEqPQFrontier
+      Data.AI.Search.Frontier.PrioritySetFrontier
       Data.AI.Search.Internals.RootSearchNode
   other-modules:
       Paths_hsearch
