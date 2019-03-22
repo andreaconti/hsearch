@@ -29,17 +29,19 @@ library:
   - matrix
   - vector
   - random
+  - deepseq
 
-executables:
-  hsearch-examples-exe:
-    main:                Main.hs
-    source-dirs:         app
+benchmarks:
+  hsearch-examples-benchs:
+    main:                Bench.hs
+    source-dirs:         bench
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
     - hsearch-examples
+    - criterion
 
 tests:
   hsearch-examples-test:

@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
+
 module AI.Search.Examples.NineGame where
 
 import Data.Matrix
@@ -6,6 +8,9 @@ import Data.List
 import Data.Vector (imap)
 import System.Random
 import Control.Monad
+
+import GHC.Generics (Generic)
+import Control.DeepSeq
 
 import AI.Search.Algorithms
 
@@ -16,7 +21,7 @@ type Pos = (Int, Int)
 
 data Card = Empty
           | Card {-# UNPACK #-} !Int
-    deriving Eq
+    deriving (Eq, Generic, NFData)
 
 instance Show Card where
     show (Card x) = "[" ++ show x ++ "]"
@@ -78,11 +83,13 @@ genTable = fromLists . map (map (\x -> if x == 0 then Empty else Card x))
 
 randomTable' randoms ops   table | ops <= 0 = table
 randomTable' (r:rs)  ops table = let tables  = map fst (stateGenerator table)
-                                 in  randomTable' rs (ops-1) (tables !! r)
+                                 in if r >= length tables
+                                    then randomTable' rs ops table
+                                    else randomTable' rs (ops-1) (tables !! r)
 
 randomTable n = do
     g <- getStdGen
-    return $ randomTable' (randomRs (0, 1) g) n goal
+    return $ randomTable' (randomRs (0, 3) g) n goal
 
 -- SOLVER --
 
