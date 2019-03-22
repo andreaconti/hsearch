@@ -15,4 +15,4 @@ main = do
     putStrLn "SOLVING:"
     print start
     putStrLn "======"
-    forM_ (solve start) print
+    forM_ (solve (State (-1,-1) start)) print

@@ -14,21 +14,30 @@ import AI.Search.Algorithms
 
 type Table = Matrix Int8
 type Pos = (Int, Int)
+type PreviousDirection = Pos
+
+data State = State {-# UNPACK #-} !Pos   -- ^ in order to not go back 
+                   {-# UNPACK #-} !Table -- ^ the current puzzle state
+    deriving Eq
+
+instance Show State where
+    show (State _ t) = show t
 
 -- PROBLEM MODEL --
 
-emptyPos :: Table -> Maybe Pos
-emptyPos = listToMaybe . join . toList . mapPos (\(r, c) v -> [(fromIntegral r, fromIntegral c) | v == 0])
+emptyPos :: Table -> Pos
+emptyPos = fromJust . listToMaybe . join . toList . mapPos (\(r, c) v -> [(fromIntegral r, fromIntegral c) | v == 0])
 
 findMoves :: Table -> [Pos]
 findMoves t = filter bounds [(ex-1, ey), (ex+1, ey), (ex, ey-1), (ex, ey+1)]
-    where (ex, ey) = fromJust $ emptyPos t
+    where (ex, ey) = emptyPos t
           bounds (x, y) = x >= 1 && y >= 1 && x <= nrows t && y <= ncols t
 
-stateGenerator :: Table -> [(Table, Int8)]
-stateGenerator t = let ep    = fromJust $ emptyPos t
-                       moves = findMoves t
-                   in  zip (map (\x -> switchCards ep x t) moves) [1,1..]
+stateGenerator :: State -> [(State, Int)]
+stateGenerator (State (x,y) t) = let (ep1, ep2) = emptyPos t
+                                     back       = (ep1-x, ep2-y)
+                                     moves      = findMoves t \\ [back]
+                                 in  zip (map (\x -> State (fst x - fst back, snd x - snd back) (switchCards (ep1, ep2) x t) ) moves) [1,1..]
 
 switchCards :: Pos -> Pos -> Table -> Table
 switchCards (x1, y1) (x2, y2) t = 
@@ -43,19 +52,15 @@ goal = fromLists
     , [9, 10, 11, 12]
     , [13, 14, 15, 0] ]
 
-misplaced t = 15 - (foldl' (\acc x -> if x == 0 then acc+1 else acc) 0 $ t - goal)
-
-{- {- positions = toList . mapPos (\p _ -> p) . fromLists $ map (map Card) [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]] -} -}
-
-{- {- manhattan t = sum . mapPos (\(cr, cc) x -> let (r, c) = positions !! (fromCard x) in (abs cr - r) + (abs cc - c)) $ t -} -}
+misplaced (State _ t) = 15 - (foldl' (\acc x -> if x == 0 then acc+1 else acc) 0 (t - goal))
 
 {- -- UTILS -- -}
 
 genTable :: [[Int8]] -> Table
 genTable = fromLists
 
-randomTable' randoms ops   table | ops <= 0 = table
-randomTable' (r:rs)  ops table = let tables  = map fst (stateGenerator table)
+randomTable' randoms ops table | ops <= 0    = table
+randomTable' (r:rs)  ops table = let tables  = map (\(State _ t, _) -> t) (stateGenerator $ State (-1,-1) table)
                                  in if r >= length tables
                                     then randomTable' rs ops table
                                     else randomTable' rs (ops-1) (tables !! r)
@@ -66,4 +71,4 @@ randomTable n = do
 
 {- -- SOLVER -- -}
 
-solve = aStarSearch misplaced (== goal) stateGenerator 
+solve = aStarSearch misplaced (\(State _ t) -> t == goal) stateGenerator 
