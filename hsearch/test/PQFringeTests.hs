@@ -28,9 +28,4 @@ readFifoFringe fr = let (fr1, ins1) = fromJust $ next fr
 
 testFifoFringe = assertEqual "test PQFringe" ("insert3", "insert2", "insert1") (readFifoFringe fillFifoFringe)
 
-failler = assertEqual "fail!" True False
-
-test :: IO ()
-test = defaultMainWithOpts
-       [ testCase "PQFringe push-pop" testFifoFringe]
-       mempty
+testsFifoFringe = [ testCase "PQFringe push-pop" testFifoFringe]

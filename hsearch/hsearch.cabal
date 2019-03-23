@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 85f84c808763c9765d9e40924781fab26e05e571cee5e7ccfcf6f4ef4bd5819e
+-- hash: 5cd9a1d60813532e38ebc3e988365b19a9632961ee62d1dffedf9ec2001729be
 
 name:           hsearch
 version:        0.1.0.0
@@ -48,6 +48,7 @@ test-suite hsearch-test
   main-is: Main.hs
   other-modules:
       PQFringeTests
+      PSFringeTests
       Paths_hsearch
   hs-source-dirs:
       test
@@ -58,4 +59,17 @@ test-suite hsearch-test
     , hsearch
     , test-framework
     , test-framework-hunit
+  default-language: Haskell2010
+
+benchmark hsearch-benchmarks
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      Paths_hsearch
+  hs-source-dirs:
+      bench
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -O
+  build-depends:
+      base >=4.7 && <5
+    , criterion
   default-language: Haskell2010
