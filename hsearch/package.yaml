@@ -35,8 +35,9 @@ benchmarks:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -O
+    - -with-rtsopts=-T
     dependencies:
+    - hsearch
     - criterion
 
 tests:

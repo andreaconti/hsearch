@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5cd9a1d60813532e38ebc3e988365b19a9632961ee62d1dffedf9ec2001729be
+-- hash: b0d05d0e53c8a1aa998e61cf002205706cb833972be72d6280228f0da40cfca3
 
 name:           hsearch
 version:        0.1.0.0
@@ -68,8 +68,9 @@ benchmark hsearch-benchmarks
       Paths_hsearch
   hs-source-dirs:
       bench
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N -O
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -with-rtsopts=-T
   build-depends:
       base >=4.7 && <5
     , criterion
+    , hsearch
   default-language: Haskell2010
