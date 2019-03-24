@@ -22,11 +22,10 @@ stateGenerator branching maxNum state  = let next   = state + 1
 
 breadthFirstBench25  = breadthFirstSearch (== 5)  (stateGenerator 2 5)
 breadthFirstBench210 = breadthFirstSearch (== 10) (stateGenerator 2 10)
-breadthFirstBench215 = breadthFirstSearch (== 20) (stateGenerator 2 15)
+breadthFirstBench215 = breadthFirstSearch (== 15) (stateGenerator 2 15)
 breadthFirstBench220 = breadthFirstSearch (== 20) (stateGenerator 2 20)
 breadthFirstBench45  = breadthFirstSearch (== 5)  (stateGenerator 4 5)
 breadthFirstBench410 = breadthFirstSearch (== 10) (stateGenerator 4 10)
-breadthFirstBench415 = breadthFirstSearch (== 10) (stateGenerator 4 15)
 
 {- depthFirstBench5  = depthFirstSearch (== 5)  (stateGenerator 2 5) -}
 {- depthFirstBench10 = depthFirstSearch (== 10) (stateGenerator 2 10) -}
@@ -41,9 +40,8 @@ breadthFirstBench415 = breadthFirstSearch (== 10) (stateGenerator 4 15)
 -- mean    : mean execution time
 -- std dev : standard deviation
 
-confs = defaultConfig 
-    { resamples = 10
-    , reportFile = Just $ "bench-results/report.html"
+confs = defaultConfig {
+        reportFile = Just $ "bench-results/report.html"
     }
 
 main = defaultMainWith confs
@@ -55,7 +53,7 @@ main = defaultMainWith confs
         , bench "B=4, D=5"  $ whnf breadthFirstBench45  1
         , bench "B=4, D=10" $ whnf breadthFirstBench410 1
         , bench "B=4, D=15" $ whnf breadthFirstBench415 1
-        -- !! Bench B=4 D=20 !! Out of memory (16Gb RAM)
+        -- !! Bench B=4 D=15 !! Out of memory (16Gb RAM)
         ]
     
 --    , bgroup "depth-first-search bench"
