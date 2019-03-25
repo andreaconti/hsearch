@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module Data.AI.Search.Fringe.PQFringe where
+module Data.AI.Search.Fringe.PriorityQueueFringe where
 
 import qualified Data.PQueue.Prio.Min as PQ
 import           Data.PQueue.Prio.Min (MinPQueue)

@@ -45,7 +45,6 @@ depthFirstBench branching depth = depthFirstSearch (isValue depth) (stateGenerat
 
 confs = defaultConfig {
           reportFile  = Just "bench-results/report.html"
-        , regressions = [(["allocated", "numGcs"], "iters")]
     }
 
 main = defaultMainWith confs

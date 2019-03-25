@@ -2,7 +2,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Data.AI.Search.Fringe.PrioritySetFringe
-    ( PrioritySetFringe
+    ( PSFringe
     , empty
     ) where
 
@@ -12,31 +12,31 @@ import           Data.PQueue.Prio.Min (MinPQueue)
 import           Data.AI.Search.Fringe
 import           Data.List
 
-data PrioritySetFringe i s = PrioritySetFringe !(PQ.MinPQueue Int s) -- ^ Set of closed nodes
-                                               !(PQ.MinPQueue i s)   -- ^ Priority Queue used
+data PSFringe i s = PSFringe !(PQ.MinPQueue Int s) -- ^ Set of closed nodes
+                             !(PQ.MinPQueue i s)   -- ^ Priority Queue used
 
-instance Fringe PrioritySetFringe where
+instance Fringe PSFringe where
     
     {-# INLINABLE next #-}
-    next (PrioritySetFringe closed queue) =
+    next (PSFringe closed queue) =
         let minNode  = snd <$> PQ.getMin queue
             newQueue = PQ.deleteMin queue
         in case minNode of
             Nothing -> Nothing
-            Just n  -> return $! (PrioritySetFringe (PQ.insert 0 n closed) newQueue, n)
+            Just n  -> return $! (PSFringe (PQ.insert 0 n closed) newQueue, n)
 
     {-# INLINABLE insert #-}
-    insert (PrioritySetFringe cl q) ord ns =
+    insert (PSFringe cl q) ord ns =
         let valids  = (nub ns) \\ PQ.elemsU cl
             keys     = map ord valids
             newQueue = PQ.fromList (zip keys valids) `PQ.union` q
-        in  PrioritySetFringe cl newQueue
+        in  PSFringe cl newQueue
 
-instance (Show s, Ord i) => Show (PrioritySetFringe i s) where
-    show (PrioritySetFringe closed queue) = "Closed: "    ++ (show . map snd . PQ.toAscList $ closed)
+instance (Show s, Ord i) => Show (PSFringe i s) where
+    show (PSFringe closed queue) = "Closed: "    ++ (show . map snd . PQ.toAscList $ closed)
                                          ++ " | Fringe: " ++ (show . map snd . PQ.toAscList $ queue)
 
 
--- | build a \PrioritySetFringe\ to use
-empty :: PrioritySetFringe i s
-empty = PrioritySetFringe PQ.empty PQ.empty
+-- | build a \PSFringe\ to use
+empty :: PSFringe i s
+empty = PSFringe PQ.empty PQ.empty

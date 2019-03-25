@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2f11301590ace930b148804a834035517d603d9691107010ba3559b27e2f40d1
+-- hash: 9a9b0c4f71ad9821902ba8f96552b79008f481fdde33fd293dceed69dd2ae4d7
 
 name:           hsearch
 version:        0.1.0.0
@@ -31,7 +31,7 @@ library
       AI.Search.Generics
       AI.Search.Policies
       Data.AI.Search.Fringe
-      Data.AI.Search.Fringe.PQFringe
+      Data.AI.Search.Fringe.PriorityQueueFringe
       Data.AI.Search.Fringe.PrioritySetFringe
       Data.AI.Search.Internals.RootSearchNode
   other-modules:
