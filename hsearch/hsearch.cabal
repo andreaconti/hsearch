@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b0d05d0e53c8a1aa998e61cf002205706cb833972be72d6280228f0da40cfca3
+-- hash: 2f11301590ace930b148804a834035517d603d9691107010ba3559b27e2f40d1
 
 name:           hsearch
 version:        0.1.0.0
@@ -47,6 +47,7 @@ test-suite hsearch-test
   type: exitcode-stdio-1.0
   main-is: Main.hs
   other-modules:
+      AlgorithmsTests
       PQFringeTests
       PSFringeTests
       Paths_hsearch
