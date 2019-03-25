@@ -9,9 +9,8 @@
 -- Stability   :  experimental
 -- Portability :  portable
 --
--- Implementation of AI search algorithms.
--- TODO
---
+-- Implementation of AI search generic algorithms, all functions in 
+-- @AI.Search.Algorithms@ rely on this module.  
 --
 -----------------------------------------------------------------------------
 
@@ -41,28 +40,32 @@ import           Data.Maybe (maybeToList, listToMaybe)
 -- | max depth to search for
 data MaxDepth = Forever | Until !Int deriving (Eq, Show)
 
+-- | search tree's node description, each node contains a state of type
+--   `s`, a depth and a cost of type `p`
 newtype SNode s p = SNode { getRSNode :: RSNode s p } deriving (Eq)
 
+-- | returns SNode state
 {-# INLINE state #-}
 state :: SNode s p -> s
 state (SNode (RSNode _ s _ _)) = s
 
+-- | returns SNode depth
 {-# INLINE depth #-}
 depth :: SNode s p -> Int
 depth (SNode (RSNode _ _ d _)) = d
 
+-- | return SNode cost
 {-# INLINE cost #-}
 cost :: SNode s p -> p
 cost (SNode (RSNode _ _ _ c)) = c
 
--- | To specify if the goal reached check must be done at node generation
--- or at goal expansion
+-- | To check if the target has been reached at Generation time or Expansion time 
 data CheckTime = Generation | Expansion
-    deriving Eq
+    deriving (Eq, Show)
 
 -- UTILS --
 
--- | Goal utility in order to find first goal in a list o nodes
+-- | Goal utility in order to find first goal in a list or nodes
 {-# INLINE findGoal #-}
 findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
@@ -79,6 +82,7 @@ toSNodeList = toSNodeList' []
 -- GENERIC SEARCH --
 
 {-# INLINE genericSearch #-}
+-- | /genericSearch/ implements must generic high level search algorithm
 genericSearch :: (Fringe f, Eq s, Num p, Ord i) => f i (RSNode s p)        -- ^ frontier used
                                                 -> (SNode s p -> a)        -- ^ result function
                                                 -> MaxDepth                -- ^ max depth to search

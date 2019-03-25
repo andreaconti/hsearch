@@ -8,7 +8,7 @@ import           Data.PQueue.Prio.Min (MinPQueue)
 import           Data.AI.Search.Fringe
 
 -- | PQFringe implements Fringe with a Priority Queue
-data PQFringe i s = PQFringe !(PQ.MinPQueue i s) -- ^ Priority Queue used
+newtype PQFringe i s = PQFringe (PQ.MinPQueue i s) -- ^ Priority Queue used
 
 instance Fringe PQFringe where
     
