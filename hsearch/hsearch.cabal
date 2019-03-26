@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bc0efc9d288a7654f2bd27b53013a7203f62ca51e8cc13d1b2872c99d236f3e6
+-- hash: 07783b20ac518d1b65847723d15d2ab477cc5b0f7aec6535c25622d7178e5c55
 
 name:           hsearch
 version:        0.1.0.0
@@ -42,6 +42,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , containers >0.5.9.1 && <=0.6.0.1
     , pqueue
   default-language: Haskell2010
 

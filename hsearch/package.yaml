@@ -26,6 +26,7 @@ library:
   source-dirs: src
   dependencies:
   - pqueue
+  - containers > 0.5.9.1 && <= 0.6.0.1
 
 benchmarks:
   hsearch-benchmarks:
