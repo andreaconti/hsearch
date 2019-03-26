@@ -1,14 +1,16 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9a9b0c4f71ad9821902ba8f96552b79008f481fdde33fd293dceed69dd2ae4d7
+-- hash: bc0efc9d288a7654f2bd27b53013a7203f62ca51e8cc13d1b2872c99d236f3e6
 
 name:           hsearch
 version:        0.1.0.0
+synopsis:       AI Search algorithms implementation
 description:    Please see the README on GitHub at <https://github.com/andreaconti/hsearch#readme>
+category:       Artificial Intelligence, Algorithms, Search
 homepage:       https://github.com/andreaconti/hsearch#readme
 bug-reports:    https://github.com/andreaconti/hsearch/issues
 author:         Andrea Conti

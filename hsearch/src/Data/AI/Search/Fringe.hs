@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Data.AI.Search.Fringe where
 
@@ -7,13 +7,13 @@ module Data.AI.Search.Fringe where
 --   elements, retrieved with @next@. This simple typeclass enables to change fringe
 --   implementation in order to customize behavior. Different instances are under
 --   @Data.AI.Search.Fringe@ 
-class Fringe f where
+class Fringe f i s where
 
     -- | retrieve next value from the frontier queue, according to ordering provided
-    next   :: (Eq s, Ord i) => f i s -> Maybe (f i s, s)
+    next   :: f i s -> Maybe (f i s, s)
 
     -- | insert `s` elements in the Fringe according to ordering policy provided, different
     --   calls to `insert` must be use same ordering policy
-    insert :: (Eq s, Ord i) => f i s -> (s -> i) -> [s] -> f i s
+    insert :: f i s -> [s] -> f i s
 
 

@@ -2,7 +2,7 @@ module PQFringeTests where
 
 import Test.HUnit
 import Data.AI.Search.Fringe
-import Data.AI.Search.Fringe.PQFringe
+import Data.AI.Search.Fringe.PriorityQueueFringe
 import AI.Search.Policies
 import Control.Monad.ST
 import Data.STRef
@@ -12,13 +12,13 @@ import Test.Framework
 import Test.Framework.Providers.HUnit
 
 fifoFringe :: PQFringe Int String
-fifoFringe = empty
+fifoFringe = empty (\x -> 0)
 
 fillFifoFringe = runST $ do
     fifoFrVar <- newSTRef fifoFringe
-    modifySTRef fifoFrVar (\f -> insert f (\x -> 0) ["insert1"])
-    modifySTRef fifoFrVar (\f -> insert f (\x -> 0) ["insert2"])
-    modifySTRef fifoFrVar (\f -> insert f (\x -> 0) ["insert3"])
+    modifySTRef fifoFrVar (\f -> insert f ["insert1"])
+    modifySTRef fifoFrVar (\f -> insert f ["insert2"])
+    modifySTRef fifoFrVar (\f -> insert f ["insert3"])
     readSTRef fifoFrVar
 
 readFifoFringe fr = let (fr1, ins1) = fromJust $ next fr
