@@ -12,16 +12,15 @@ import Control.Monad
 import GHC.Generics (Generic)
 import Control.DeepSeq
 
-import AI.Search.Algorithms
+import AI.Search.Generics
+import AI.Search.Policies
+import Data.AI.Search.Fringe.PrioritySetFringe as PF
+
 
 -- model types
-
-type Table = Matrix Card
-type Pos = (Int, Int)
-
 data Card = Empty
           | Card {-# UNPACK #-} !Int
-    deriving (Eq, Generic, NFData)
+    deriving (Eq, Generic, NFData, Ord)
 
 instance Show Card where
     show (Card x) = "[" ++ show x ++ "]"
@@ -48,38 +47,55 @@ instance Num Card where
     negate (Card x) = Card $ negate x
     negate Empty    = Empty
 
+type Pos = (Int, Int)
+
+data Table = Table { 
+                     getTable :: !(Matrix Card)
+                   , previous :: !Pos
+                   }
+
+instance Eq Table where
+    (Table t1 _) == (Table t2 _) = t1 == t2
+
+instance Show Table where
+    show (Table t1 _) = show t1
+
+instance Ord Table where
+    (Table m1 _) <= (Table m2 _) = sum m1 <= sum m2
+
 -- PROBLEM MODEL --
 
 emptyPos :: Table -> Maybe Pos
-emptyPos = listToMaybe . join . toList . mapPos (\(r, c) v -> [(r, c) | v == Empty])
+emptyPos = listToMaybe . join . toList . mapPos (\(r, c) v -> [(r, c) | v == Empty]) . getTable
 
 findMoves :: Table -> [Pos]
-findMoves t = filter bounds [(ex-1, ey), (ex+1, ey), (ex, ey-1), (ex, ey+1)]
-    where (ex, ey) = fromJust $ emptyPos t
+findMoves table@(Table t p) = filter (\x -> bounds x && x /= p) [(ex-1, ey), (ex+1, ey), (ex, ey-1), (ex, ey+1)]
+    where (ex, ey) = fromJust $ emptyPos table
           bounds (x, y) = x >= 1 && y >= 1 && x <= nrows t && y <= ncols t
 
 stateGenerator :: Table -> [(Table, Int)]
-stateGenerator t = let ep    = fromJust $ emptyPos t
-                       moves = findMoves t
-                   in  zip (map (\x -> switchCards ep x t) moves) [1..]
+stateGenerator table = 
+                  let ep    = fromJust $ emptyPos table
+                      moves = findMoves table
+                  in  zip (map (\x -> switchCards ep x table) moves) [1,1..]
 
 switchCards :: Pos -> Pos -> Table -> Table
-switchCards (x1, y1) (x2, y2) t = 
+switchCards (x1, y1) (x2, y2) (Table t _) = 
     let a = getElem x1 y1 t
         b = getElem x2 y2 t
-    in  setElem a (x2, y2) . setElem b (x1, y1) $ t
+    in  Table (setElem a (x2, y2) . setElem b (x1, y1) $ t) (x1, y1)
 
-goal = fromLists
+goal = (\t -> Table t (-1,-1)) . fromLists $
     [ [Card 1, Card 2, Card 3]
     , [Card 4, Card 5, Card 6]
     , [Card 7, Card 8, Empty ] ]
 
-heuristic t = 8 - (foldl' (\acc x -> if x == Card 0 then acc+1 else acc) 0 $ t - goal)
+heuristic (Table t p) = 8 - (foldl' (\acc x -> if x == Card 0 then acc+1 else acc) 0 $ t - getTable goal)
 
 -- UTILS --
 
-genTable :: [[Int]] -> Matrix Card
-genTable = fromLists . map (map (\x -> if x == 0 then Empty else Card x))
+genTable :: [[Int]] -> Table
+genTable = (\t -> Table t (-1,-1)) . fromLists . map (map (\x -> if x == 0 then Empty else Card x))
 
 randomTable' randoms ops   table | ops <= 0 = table
 randomTable' (r:rs)  ops table = let tables  = map fst (stateGenerator table)
@@ -93,4 +109,4 @@ randomTable n = do
 
 -- SOLVER --
 
-solve = iterativeAStarSearch heuristic (== goal) stateGenerator 
+solve = genericSearch (PF.empty $ aStarPolicy heuristic . SNode) state Forever Generation (== goal) stateGenerator 

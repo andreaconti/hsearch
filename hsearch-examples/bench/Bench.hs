@@ -16,14 +16,17 @@ moves4 = genTable [ [0,2,3]
 moves8 = genTable [ [2,5,3]
                   , [1,7,6]
                   , [4,0,8] ]
-                  
-config = defaultConfig {
-    resamples = 1
-}
 
-main = defaultMainWith config [
+generic = genTable [ [8,0,3]
+                   , [6,5,4]
+                   , [7,1,2] ]
+
+main = defaultMain [
     bgroup "nine-game" [
-        bench "2 moves" $ nf solve moves2 ,
-        bench "4 moves" $ nf solve moves4 ,
-        bench "8 moves" $ nf solve moves8 ]
+        bench "2 moves" $ whnf solve moves2 ,
+        bench "4 moves" $ whnf solve moves4 ,
+        bench "8 moves" $ whnf solve moves8 ]
     ]
+
+-- to print generic result
+{- main = forM_ (solve generic) print -}

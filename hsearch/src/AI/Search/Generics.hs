@@ -17,7 +17,7 @@
 module AI.Search.Generics
     ( MaxDepth(..)
     , CheckTime(..)
-    , SNode
+    , SNode(..)
     , state, cost, depth
     , genericSearch
     , searchUntilDepth
