@@ -4,6 +4,7 @@ module Data.AI.Search.SearchRoute
     -- * Deconstruction
     , EndPoint(..), endPoint
     , StartPoint(..), startPoint
+    , takeEnd, takeStart
     
     -- * Construction
     , append

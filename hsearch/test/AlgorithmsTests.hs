@@ -30,4 +30,4 @@ stateGenerator branching maxNum state  = let next   = increase state 1
 -- check end not found
 testBreadthFirstSearch1 = assertEqual "check correct error" [] (breadthFirstSearch (const False) (stateGenerator 2 5) start) 
 
-testsBreadthFirstSearch = [ testCase "correct result not found" testBreadthFirstSearch1 ]
+testsBreadthFirstSearch = [ testCase "breadth-first-search tests" testBreadthFirstSearch1 ]

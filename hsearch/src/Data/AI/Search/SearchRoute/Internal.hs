@@ -11,6 +11,7 @@ module Data.AI.Search.SearchRoute.Internal
     , EndPoint(..), endPoint
     , StartPoint(..), startPoint
     , pattern (:<), pattern (:>)
+    , takeStart, takeEnd
     
     -- * Construction
     , append
@@ -73,3 +74,9 @@ pattern v :< route <- (startPoint -> v :- route)
 
 pattern (:>) :: SRoute a -> a -> SRoute a
 pattern route :> v <- (endPoint -> route :+ v)
+
+takeEnd :: SRoute a -> a
+takeEnd (_ :> x) = x
+
+takeStart :: SRoute a -> a
+takeStart (x :< _) = x

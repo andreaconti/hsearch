@@ -15,6 +15,7 @@ import Control.DeepSeq
 import AI.Search.Generics
 import AI.Search.Policies
 import Data.AI.Search.Fringe.PrioritySetFringe as PF
+import Data.AI.Search.SearchRoute (takeStart)
 
 
 -- model types
@@ -109,4 +110,4 @@ randomTable n = do
 
 -- SOLVER --
 
-solve = genericSearch (PF.empty $ aStarPolicy heuristic . SNode) state Forever Generation (== goal) stateGenerator 
+solve = genericSearch (PF.empty $ aStarPolicy heuristic . takeStart) state Forever Generation (== goal) stateGenerator 
