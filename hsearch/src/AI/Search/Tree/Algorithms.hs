@@ -1,14 +1,15 @@
-module AI.Search.Algorithms 
+module AI.Search.Tree.Algorithms 
     ( breadthFirstSearch
     , uniformCostSearch
     , depthFirstSearch
     , iterativeDepthFirstSearch
+    , greedyBestFirstSearch
     , aStarSearch
-    , iterativeAStarSearch
     ) where
 
-import           AI.Search.Generics
+import           AI.Search.Tree.Generics
 import qualified AI.Search.Policies as P
+import qualified Data.AI.Search.SearchNode as SN
 
 -- TREE SEARCH --
 
@@ -22,7 +23,7 @@ breadthFirstSearch :: (Eq s, Num p) => (s -> Bool)       -- ^ function used to c
                                     -> (s -> [(s, p)])   -- ^ generator of states
                                     -> s                 -- ^ initial state
                                     -> [s]               -- ^ returns list of states
-breadthFirstSearch = search P.breadthFirstPolicy Generation
+breadthFirstSearch = search SN.state Forever P.breadthFirstPolicy Generation
 
 -- | generalization of @breadthFirstSearch@ when paths costs are not all equals on the same level
 {-# INLINE uniformCostSearch #-}
@@ -30,7 +31,7 @@ uniformCostSearch :: (Eq s, Num p, Ord p) => (s -> Bool) -- ^ function used to c
                                    -> (s -> [(s, p)])    -- ^ generator of states
                                    -> s                  -- ^ initial state
                                    -> [s]                -- ^ returns list of states
-uniformCostSearch = search P.uniformCostPolicy Expansion
+uniformCostSearch = search SN.state Forever P.uniformCostPolicy Expansion
 
 -- | search with depth first policy. The deepest node is always expanded first, it is not /complete/ or
 --   /optimal/ but keeps only one route at a time in memory so it has a spatial complexity of /O(bm)/ with
@@ -41,7 +42,7 @@ depthFirstSearch :: (Eq s, Num p) => (s -> Bool) -- ^ function used to check if 
                            -> (s -> [(s, p)])    -- ^ generator of states
                            -> s                  -- ^ initial state
                            -> [s]                -- ^ returns list of states
-depthFirstSearch = search P.depthFirstPolicy Generation
+depthFirstSearch = search SN.state Forever P.depthFirstPolicy Generation
 
 -- | search with @depthFirstSearch@ in iterative way, If in the state graph there are
 --   loops it will not loop forever.
@@ -50,7 +51,7 @@ iterativeDepthFirstSearch:: (Eq s, Num p) => (s -> Bool)       -- ^ function use
                                           -> (s -> [(s, p)]) -- ^ generator of states
                                           -> s                 -- ^ initial state
                                           -> [s]               -- ^ returns list of states
-iterativeDepthFirstSearch = iterativeSearch P.depthFirstPolicy Generation
+iterativeDepthFirstSearch = iterativeSearch SN.state P.depthFirstPolicy Generation
 
 -- INFORMED SEARCH ALGORITHMS --
 
@@ -63,7 +64,7 @@ greedyBestFirstSearch :: (Eq s, Num p, Ord p) => (s -> p)        -- ^ heuristic 
                                               -> (s -> [(s, p)]) -- ^ generator of states
                                               -> s                 -- ^ initial state
                                               -> [s]               -- ^ returns list of states
-greedyBestFirstSearch h = search (P.greedyBestFirstPolicy h) Expansion
+greedyBestFirstSearch h = search SN.state Forever (P.greedyBestFirstPolicy h) Expansion
 
 -- | A* search is a informed search algorithm which take into account both cost to reach a node and heuristic function
 --   in order to choose next state. It behaves as a @uniformCostSearch@ with a heuristic function
@@ -73,13 +74,4 @@ aStarSearch :: (Eq s, Num p, Ord p) => (s -> p)          -- ^ heuristic cost fun
                                     -> (s -> [(s, p)])   -- ^ generator of states
                                     -> s                 -- ^ initial state
                                     -> [s]               -- ^ returns list of states
-aStarSearch h = search (P.aStarPolicy h) Expansion
-
--- | search with @aStarSearch@ in iterative way
-{-# INLINE iterativeAStarSearch #-}
-iterativeAStarSearch :: (Eq s, Num p, Ord p) => (s -> p)          -- ^ heuristic cost function
-                                             -> (s -> Bool)       -- ^ function used to check if the goal is reached
-                                             -> (s -> [(s, p)])   -- ^ generator of states
-                                             -> s                 -- ^ initial state
-                                             -> [s]               -- ^ returns list of states
-iterativeAStarSearch h = iterativeSearch (P.aStarPolicy h) Expansion
+aStarSearch h = search SN.state Forever (P.aStarPolicy h) Expansion

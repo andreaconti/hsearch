@@ -7,8 +7,8 @@ module AI.Search.Policies
     ) where
 
 import           Data.Function (on)
-import qualified AI.Search.Generics as SN
-import           AI.Search.Generics (SNode)
+import qualified Data.AI.Search.SearchNode as SN
+import           Data.AI.Search.SearchNode (SNode)
 
 -- NOT INFORMED POLICIES --
 

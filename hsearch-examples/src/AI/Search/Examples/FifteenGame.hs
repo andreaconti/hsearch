@@ -8,7 +8,7 @@ import System.Random
 import Control.Monad
 import Data.Int
 
-import AI.Search.Algorithms
+import AI.Search.Graph.Algorithms
 
 -- model types
 
@@ -19,6 +19,9 @@ type PreviousDirection = Pos
 data State = State {-# UNPACK #-} !Pos   -- ^ in order to not go back 
                    {-# UNPACK #-} !Table -- ^ the current puzzle state
     deriving Eq
+
+instance Ord State where
+    (State p _) <= (State p1 _) = p <= p1
 
 instance Show State where
     show (State _ t) = show t

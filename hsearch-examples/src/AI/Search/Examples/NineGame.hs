@@ -12,11 +12,8 @@ import Control.Monad
 import GHC.Generics (Generic)
 import Control.DeepSeq
 
-import AI.Search.Generics
+import AI.Search.Graph.Algorithms
 import AI.Search.Policies
-import Data.AI.Search.Fringe.PrioritySetFringe as PF
-import Data.AI.Search.SearchRoute (takeStart)
-
 
 -- model types
 data Card = Empty
@@ -110,4 +107,4 @@ randomTable n = do
 
 -- SOLVER --
 
-solve = genericSearch (PF.empty $ aStarPolicy heuristic . takeStart) state Forever Generation (== goal) stateGenerator 
+solve = aStarSearch heuristic (== goal) stateGenerator

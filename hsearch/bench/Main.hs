@@ -5,7 +5,7 @@ module Main where
 import Data.Int
 import Data.List
 
-import AI.Search.Algorithms
+import AI.Search.Tree.Algorithms
 import Criterion.Main
 import Criterion.Types
 import Criterion.Main.Options
