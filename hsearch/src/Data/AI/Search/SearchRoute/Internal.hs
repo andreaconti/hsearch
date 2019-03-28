@@ -10,6 +10,7 @@ module Data.AI.Search.SearchRoute.Internal
     -- * Deconstruction
     , EndPoint(..), endPoint
     , StartPoint(..), startPoint
+    , pattern (:<), pattern (:>)
     
     -- * Construction
     , append
@@ -18,6 +19,7 @@ module Data.AI.Search.SearchRoute.Internal
 
 import qualified Data.Sequence as Seq
 import           Data.Sequence (Seq)
+import           Control.Applicative ((<|>))
 
 
 ------------------------------------------------
@@ -59,10 +61,12 @@ data StartPoint a = a :- SRoute a
     deriving (Eq, Ord, Show)
 
 startPoint :: SRoute a -> StartPoint a
-startPoint (SRoute (Seq.viewl -> start Seq.:< tail)) = start :- (SRoute tail)
+startPoint (SRoute (Seq.viewl -> start Seq.:< tail)) = start :- SRoute tail'
+    where tail' = if Seq.null tail then Seq.singleton start else tail
 
 endPoint :: SRoute a -> EndPoint a
-endPoint (SRoute (Seq.viewr -> tail Seq.:> end)) = (SRoute tail) :+ end
+endPoint (SRoute (Seq.viewr -> tail Seq.:> end)) = SRoute tail' :+ end
+    where tail' = if Seq.null tail then Seq.singleton end else tail
 
 pattern (:<) :: a -> SRoute a -> SRoute a
 pattern v :< route <- (startPoint -> v :- route)

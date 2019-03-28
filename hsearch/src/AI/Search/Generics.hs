@@ -28,6 +28,9 @@ module AI.Search.Generics
 import qualified Data.AI.Search.Internals.RootSearchNode as RSN
 import           Data.AI.Search.Internals.RootSearchNode (RSNode(..))
 
+import qualified Data.AI.Search.SearchRoute.Internal as SR
+import           Data.AI.Search.SearchRoute.Internal (SRoute(..))
+
 import qualified Data.AI.Search.Fringe.PriorityQueueFringe as PQ
 import           Data.AI.Search.Fringe (Fringe, next, insert)
 

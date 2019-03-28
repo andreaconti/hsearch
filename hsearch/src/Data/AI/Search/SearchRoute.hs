@@ -1,5 +1,5 @@
 module Data.AI.Search.SearchRoute
-    ( SRoute
+    ( SRoute(..)
 
     -- * Deconstruction
     , EndPoint(..), endPoint
