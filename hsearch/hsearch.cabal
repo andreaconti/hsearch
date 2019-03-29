@@ -1,10 +1,10 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.31.1.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ca7cdd188adb092b39db1781a4464038f40c3effe756d441ec92e4c50a8fc626
+-- hash: 1b20e27459efa4921aac886682a2dee7d0f4610413323bb1233f7d861b5cedfb
 
 name:           hsearch
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
       AI.Search.Policies
       AI.Search.Tree.Algorithms
       AI.Search.Tree.Generics
+      AI.Search.Types
       Data.AI.Search.SearchGraph
       Data.AI.Search.SearchNode
       Data.AI.Search.SearchRoute

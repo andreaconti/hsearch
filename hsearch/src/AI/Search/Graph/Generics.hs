@@ -68,7 +68,7 @@ search rf !md p !ct cg g s = join . maybeToList $ loop initFringe
                 genGoal      = guard (ct == Generation && cg cs) >> (Just $! currentSNode)
                 expGoal      = guard (ct == Expansion) >> findGoal (cg . state) nextSNodes
             case genGoal <|> expGoal of
-                Nothing   -> loop (SG.insert cFr $ map (SR.append routeTail) nextSNodes)
+                Nothing   -> loop (SG.insert cFr $ map (SR.append $ SR.append routeTail currentSNode ) nextSNodes)
                 Just goal -> return $! toList . fmap rf $ SR.append routeTail goal
 
 -- | /iterativeSearch/ is equivalent to @searchUntilDepth@ called on increasing depths until the goal is found. Used with
