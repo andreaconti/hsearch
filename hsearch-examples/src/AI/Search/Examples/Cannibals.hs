@@ -5,6 +5,13 @@ import AI.Search.Graph.Algorithms
 import Control.Monad (guard)
 import Data.Maybe
 
+--------------------------------------
+-- Example of solution of Cannibals
+-- and Missionary :
+-- 
+--
+--------------------------------------
+
 data SpondaBarca = S | D
     deriving (Eq, Ord, Show)
 

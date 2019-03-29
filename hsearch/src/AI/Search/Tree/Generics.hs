@@ -2,15 +2,17 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Search
+-- Module      :  AI.Search.Tree.Generics
 -- Copyright   :  Andrea Conti 2019
 -- License     :  BSD-3-Clause
 -- Maintainer  :  contiandrea96@gmail.com
 -- Stability   :  experimental
 -- Portability :  portable
 --
--- Implementation of AI search generic algorithms, all functions in 
--- @AI.Search.Algorithms@ rely on this module.  
+-- Implementation of AI search generic algorithms for tree search,
+-- all functions in @AI.Search.Graph.Algorithms@ rely on this module.
+-- Main function is `search`, instead for iterative deepening search 
+-- there is `iterativeSearch`
 --
 -----------------------------------------------------------------------------
 

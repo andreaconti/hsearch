@@ -1,7 +1,11 @@
 module AI.Search.Policies 
-    ( breadthFirstPolicy
+    ( 
+   -- * not informed policies
+      breadthFirstPolicy
     , uniformCostPolicy
     , depthFirstPolicy
+
+   -- * informed (heuristic) policies  
     , greedyBestFirstPolicy
     , aStarPolicy
     ) where
@@ -10,7 +14,24 @@ import           Data.Function (on)
 import qualified Data.AI.Search.SearchNode as SN
 import           Data.AI.Search.SearchNode (SNode)
 
--- NOT INFORMED POLICIES --
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  AI.Search.Policies
+-- Copyright   :  Andrea Conti 2019
+-- License     :  BSD-3-Clause
+-- Maintainer  :  contiandrea96@gmail.com
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- generic policies which can be applied to algorithms
+-- in `AI.Search.[Tree|Graph].Generics`
+--
+-----------------------------------------------------------------------------
+
+
+-----------------------------------
+-- not informed policies
+-----------------------------------
 
 -- | Breadth-First Search policy implementation, returns the depth
 {-# INLINE breadthFirstPolicy #-}
@@ -27,7 +48,9 @@ uniformCostPolicy = SN.cost
 depthFirstPolicy :: SNode s p -> Int
 depthFirstPolicy n = - (SN.depth n)
 
--- INFORMED (HEURISTIC) POLICIES --
+-----------------------------------
+-- informed (heuristic) policies
+-----------------------------------
 
 {-# INLINE greedyBestFirstPolicy #-}
 greedyBestFirstPolicy :: (Ord p) => (s -> p) -> SNode s p -> p

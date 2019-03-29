@@ -1,7 +1,11 @@
 module AI.Search.Graph.Algorithms 
-    ( breadthFirstSearch
+    ( 
+   -- * not informed search   
+      breadthFirstSearch
     , uniformCostSearch
     , depthFirstSearch
+
+   -- * informed search  
     , greedyBestFirstSearch
     , aStarSearch
     ) where
@@ -10,9 +14,25 @@ import           AI.Search.Graph.Generics
 import qualified AI.Search.Policies as P
 import qualified Data.AI.Search.SearchNode as SN
 
--- TREE SEARCH --
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  AI.Search.Graph.Algorithms
+-- Copyright   :  Andrea Conti 2019
+-- License     :  BSD-3-Clause
+-- Maintainer  :  contiandrea96@gmail.com
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Implementation of main search algorithms for state search in graph flavour, such
+-- algorithms are heavier than tree search equivalents but are not affected by possible
+-- loops cause they keep track of closed nodes.
+--
+-----------------------------------------------------------------------------
 
--- NOT INFORMED SEARCH --
+------------------------------------------
+-- not informed search
+------------------------------------------
+
 
 -- | search with breadth first policy. The root node is expanded first, then all its childrens and so
 --   on, It's /complete/ and /optimal/ but very expensive in time and space complexity (/O(b^d)/ with
@@ -43,7 +63,9 @@ depthFirstSearch :: (Ord s, Num p) => (s -> Bool) -- ^ function used to check if
                            -> [s]                -- ^ returns list of states
 depthFirstSearch = search SN.state Forever P.depthFirstPolicy Generation
 
--- INFORMED SEARCH ALGORITHMS --
+------------------------------------------
+-- informed search
+------------------------------------------
 
 -- | informed search algorithm which take into account only the value of the heuristic function in order to 
 --   choose next state, it is greedy cause it tries to reach the goal as fast as possible.It is not /optimal/

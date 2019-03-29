@@ -1,19 +1,38 @@
 module AI.Search.Tree.Algorithms 
-    ( breadthFirstSearch
+    ( 
+   -- * not informed search 
+      breadthFirstSearch
     , uniformCostSearch
     , depthFirstSearch
     , iterativeDepthFirstSearch
+   
+   -- * informed search
     , greedyBestFirstSearch
     , aStarSearch
     ) where
+
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  AI.Search.Tree.Algorithms
+-- Copyright   :  Andrea Conti 2019
+-- License     :  BSD-3-Clause
+-- Maintainer  :  contiandrea96@gmail.com
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Implementation of main search algorithms for state search in tree flavour, such
+-- algorithms are lighter than graph search equivalents but are affected by possible
+-- loops cause don't keep track of closed nodes.
+--
+-----------------------------------------------------------------------------
 
 import           AI.Search.Tree.Generics
 import qualified AI.Search.Policies as P
 import qualified Data.AI.Search.SearchNode as SN
 
--- TREE SEARCH --
-
--- NOT INFORMED SEARCH --
+------------------------------------------
+-- not informed search
+------------------------------------------
 
 -- | search with breadth first policy. The root node is expanded first, then all its childrens and so
 --   on, It's /complete/ and /optimal/ but very expensive in time and space complexity (/O(b^d)/ with
@@ -53,7 +72,9 @@ iterativeDepthFirstSearch:: (Eq s, Num p) => (s -> Bool)       -- ^ function use
                                           -> [s]               -- ^ returns list of states
 iterativeDepthFirstSearch = iterativeSearch SN.state P.depthFirstPolicy Generation
 
--- INFORMED SEARCH ALGORITHMS --
+------------------------------------------
+-- informed search
+------------------------------------------
 
 -- | informed search algorithm which take into account only the value of the heuristic function in order to 
 --   choose next state, it is greedy cause it tries to reach the goal as fast as possible.It is not /optimal/

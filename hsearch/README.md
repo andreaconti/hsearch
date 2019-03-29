@@ -18,7 +18,7 @@ could contain the same state if the state space is a graph (for instance if is a
 to undo an action). The algorithm at each iteration appends nodes to the search tree, the whole of all not
 yet expanded nodes constitutes the *fringe*. Through a *search strategy* the algorithm chooses which node
 expand of those in the fringe, if there aren't nodes in the fringe the algorithm fails cause there is not a
-solution in the state space, most often the state space is infine and a infinite loop happens.
+solution in the state space, most often the state space is infine and a infinite loop happens if goal is not found.
 
 ## Library Core Interfaces
 

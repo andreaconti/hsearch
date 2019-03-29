@@ -1,6 +1,6 @@
 module Main where
 
-import AI.Search.Examples.NineGame
+import AI.Search.Examples.EightPuzzle
 import Criterion.Main
 import Criterion.Types
 import Control.Monad
@@ -22,11 +22,8 @@ generic = genTable [ [8,0,3]
                    , [7,1,2] ]
 
 main = defaultMain [
-    bgroup "nine-game" [
+    bgroup "eight puzzle" [
         bench "2 moves" $ whnf solve moves2 ,
         bench "4 moves" $ whnf solve moves4 ,
         bench "8 moves" $ whnf solve moves8 ]
     ]
-
--- to print generic result
-{- main = forM_ (solve generic) print -}

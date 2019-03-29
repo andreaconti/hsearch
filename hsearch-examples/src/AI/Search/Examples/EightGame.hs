@@ -15,6 +15,12 @@ import Control.DeepSeq
 import AI.Search.Graph.Algorithms
 import AI.Search.Policies
 
+--------------------------------------
+-- Example of solution of the Eight
+-- puzzle game 
+--------------------------------------
+
+
 -- model types
 data Card = Empty
           | Card {-# UNPACK #-} !Int
