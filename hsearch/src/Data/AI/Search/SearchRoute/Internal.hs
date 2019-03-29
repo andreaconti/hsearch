@@ -80,3 +80,4 @@ takeEnd (_ :> x) = x
 
 takeStart :: SRoute a -> a
 takeStart (x :< _) = x
+
