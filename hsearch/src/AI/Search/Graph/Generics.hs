@@ -71,7 +71,7 @@ search rf !md p !ct cg g s = join . maybeToList $ loop initFringe
                 expGoal      = guard (ct == Expansion) >> findGoal (cg . state) nextSNodes
             case genGoal <|> expGoal of
                 Nothing   -> loop (SG.insert cFr $ map (SR.append $ SR.append routeTail currentSNode ) nextSNodes)
-                Just goal -> return $! toList . fmap rf $ SR.append routeTail goal
+                Just goal -> let (_ SR.:< skipFirst) = routeTail in return $! toList . fmap rf $ SR.append skipFirst goal
 
 -- | /iterativeSearch/ is equivalent to @searchUntilDepth@ called on increasing depths until the goal is found. Used with
 --   a depth first like policy can provide features similar to a search in amplitude (breadth first like policy)

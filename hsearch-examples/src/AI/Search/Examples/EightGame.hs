@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
 
-module AI.Search.Examples.NineGame where
+module AI.Search.Examples.EightGame where
 
 import Data.Matrix
 import Data.Maybe
