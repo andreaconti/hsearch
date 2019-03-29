@@ -8,41 +8,38 @@ import Data.Maybe
 --------------------------------------
 -- Example of solution of Cannibals
 -- and Missionary :
--- 
---
+-- Help the 3 cannibals and 3 missionaries to move to the other side of the lake. 
+-- Note that when there are more cannibals on one side of the lake than 
+-- missionaries, the cannibals eat them. There is a ship which can carry a
+-- maximum of 2 people. The goal is to have 3 cannibals and 3 missionaries on the
+-- right side of the lake.
 --------------------------------------
 
-data SpondaBarca = S | D
+data ShipSide = L | R
     deriving (Eq, Ord, Show)
 
-cambiaSponda :: SpondaBarca -> SpondaBarca
-cambiaSponda S = D
-cambiaSponda D = S
+switchSide :: ShipSide -> ShipSide
+switchSide L = R
+switchSide R = S
 
-type Stato = (Int, Int, SpondaBarca)
+type LeftSide = (Int, Int, ShipSide)
 
-goal :: Stato -> Bool
-goal = (==(0,0,D))
+goal :: LeftSide -> Bool
+goal = (==(0,0,R))
 
-applicaOp :: Stato -> (Int, Int) -> Maybe Stato
-applicaOp (m, c, sponda) (x, y) = do
+applicaOp :: LeftSide -> (Int, Int) -> Maybe Stato
+applicaOp (m, c, side) (x, y) = do
     let nc = c + y
         nm = m + x
         valids = [(0,0),(0,1),(0,2),(0,3),(1,1),(2,2),(3,0),(3,1),(3,2),(3,3)]
-    {- guard (m + x >= 0 && c + y >= 0) -}
-    {- guard (m + x <= 3 && c + y <= 3) -}
-    {- guard ( nc == nm || nc - nm  ) -}
     guard ((nm, nc) `elem` valids)
-    return $ (m + x, c + y, cambiaSponda sponda)
+    return (m + x, c + y, switchSide side)
 
-opsDS = [(1,1),(2,0),(0,2),(1,0),(0,1)]
-opsSD = map (\(x,y) -> (-x, -y)) opsDS
+opsRL = [(1,1),(2,0),(0,2),(1,0),(0,1)]
+opsLR = map (\(x,y) -> (-x, -y)) opsRL
 
-stateGenerator :: Stato -> [(Stato, Int)]
-stateGenerator stato@(_,_, S) = zip ( catMaybes . map (applicaOp stato) $ opsSD ) [1,1..]
-stateGenerator stato@(_,_, D) = zip ( catMaybes . map (applicaOp stato) $ opsDS ) [1,1..]
+stateGenerator :: LeftSide -> [(Stato, Int)]
+stateGenerator stato@(_,_, S) = zip ( mapMaybe (applicaOp stato) opsLR ) [1,1..]
+stateGenerator stato@(_,_, D) = zip ( mapMaybe (applicaOp stato) opsRL ) [1,1..]
 
 solve = breadthFirstSearch goal stateGenerator
-
-
-
