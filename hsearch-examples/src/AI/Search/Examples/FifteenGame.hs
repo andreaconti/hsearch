@@ -8,7 +8,8 @@ import System.Random
 import Control.Monad
 import Data.Int
 
-import AI.Search.Graph.Algorithms
+import AI.Search
+import AI.Search.Policies
 
 -- model types
 
@@ -74,4 +75,7 @@ randomTable n = do
 
 {- -- SOLVER -- -}
 
-solve = aStarSearch misplaced (\(State _ t) -> t == goal) stateGenerator 
+solve = search graph (aStarPolicy misplaced) (\(State _ t) -> t == goal) stateGenerator
+
+
+

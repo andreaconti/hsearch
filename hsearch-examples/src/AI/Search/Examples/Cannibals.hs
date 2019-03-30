@@ -1,7 +1,7 @@
 module AI.Search.Examples.Cannibals where
 
-import AI.Search.Types
-import AI.Search.Graph.Algorithms
+import AI.Search
+import AI.Search.Policies
 import Control.Monad (guard)
 import Data.Maybe
 
@@ -20,14 +20,14 @@ data ShipSide = L | R
 
 switchSide :: ShipSide -> ShipSide
 switchSide L = R
-switchSide R = S
+switchSide R = L
 
 type LeftSide = (Int, Int, ShipSide)
 
 goal :: LeftSide -> Bool
 goal = (==(0,0,R))
 
-applicaOp :: LeftSide -> (Int, Int) -> Maybe Stato
+applicaOp :: LeftSide -> (Int, Int) -> Maybe LeftSide
 applicaOp (m, c, side) (x, y) = do
     let nc = c + y
         nm = m + x
@@ -38,8 +38,8 @@ applicaOp (m, c, side) (x, y) = do
 opsRL = [(1,1),(2,0),(0,2),(1,0),(0,1)]
 opsLR = map (\(x,y) -> (-x, -y)) opsRL
 
-stateGenerator :: LeftSide -> [(Stato, Int)]
-stateGenerator stato@(_,_, S) = zip ( mapMaybe (applicaOp stato) opsLR ) [1,1..]
-stateGenerator stato@(_,_, D) = zip ( mapMaybe (applicaOp stato) opsRL ) [1,1..]
+stateGenerator :: LeftSide -> [(LeftSide, Int)]
+stateGenerator stato@(_,_, L) = zip ( mapMaybe (applicaOp stato) opsLR ) [1,1..]
+stateGenerator stato@(_,_, R) = zip ( mapMaybe (applicaOp stato) opsRL ) [1,1..]
 
-solve = breadthFirstSearch goal stateGenerator
+solve = search graph breadthFirstPolicy goal stateGenerator

@@ -5,11 +5,15 @@ module AlgorithmsTests where
 import Test.HUnit (assertEqual)
 import Test.Framework
 import Test.Framework.Providers.HUnit
-import AI.Search.Algorithms
+import AI.Search
+import AI.Search.Policies
 import Data.Int
 
 data State = State { depth :: Int, value :: Int }
     deriving (Eq, Show)
+
+instance Ord State where
+    (State _ v1) <= (State _ v2) = v1 <= v2
 
 increase :: State -> Int -> State
 increase State{..} v = State (depth + 1) (value + 1)   
@@ -28,6 +32,6 @@ stateGenerator branching maxNum state  = let next   = increase state 1
                                                 else zip (others ++ [next]) [1,1..]
 
 -- check end not found
-testBreadthFirstSearch1 = assertEqual "check correct error" [] (breadthFirstSearch (const False) (stateGenerator 2 5) start) 
+testBreadthFirstSearch1 = assertEqual "check correct error" [] (search graph breadthFirstPolicy (const False) (stateGenerator 2 5) start) 
 
 testsBreadthFirstSearch = [ testCase "breadth-first-search tests" testBreadthFirstSearch1 ]

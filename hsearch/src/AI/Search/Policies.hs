@@ -1,7 +1,12 @@
+{-# LANGUAGE RankNTypes #-}
 module AI.Search.Policies 
     ( 
+   -- * types
+      CheckTime(..)
+    , SearchPolicy(..)
+
    -- * not informed policies
-      breadthFirstPolicy
+    , breadthFirstPolicy
     , uniformCostPolicy
     , depthFirstPolicy
 
@@ -28,6 +33,17 @@ import           Data.AI.Search.SearchNode (SNode)
 --
 -----------------------------------------------------------------------------
 
+-----------------------------------
+-- types
+-----------------------------------
+
+-- | To check if the target has been reached at Generation time or Expansion time 
+data CheckTime = Generation | Expansion
+    deriving (Eq, Show)
+
+data SearchPolicy s p i = SearchPolicy { policy    :: SNode s p -> i
+                                       , checkTime :: CheckTime
+                                       }
 
 -----------------------------------
 -- not informed policies
@@ -35,27 +51,27 @@ import           Data.AI.Search.SearchNode (SNode)
 
 -- | Breadth-First Search policy implementation, returns the depth
 {-# INLINE breadthFirstPolicy #-}
-breadthFirstPolicy :: SNode s p -> Int
-breadthFirstPolicy = SN.depth
+breadthFirstPolicy :: SearchPolicy s p Int
+breadthFirstPolicy = SearchPolicy (\n -> SN.depth n) Generation
 
 -- | Uniform-Cost Search policy implementation
 {-# INLINE uniformCostPolicy #-}
-uniformCostPolicy :: SNode s p -> p
-uniformCostPolicy = SN.cost
+uniformCostPolicy :: (Ord p) => SearchPolicy s p p
+uniformCostPolicy = SearchPolicy SN.cost Expansion
 
 -- | Depth-First Search policy implementation
 {-# INLINE depthFirstPolicy #-}
-depthFirstPolicy :: SNode s p -> Int
-depthFirstPolicy n = - (SN.depth n)
+depthFirstPolicy :: SearchPolicy s p Int
+depthFirstPolicy = SearchPolicy (\n -> - (SN.depth n)) Generation
 
 -----------------------------------
 -- informed (heuristic) policies
 -----------------------------------
 
 {-# INLINE greedyBestFirstPolicy #-}
-greedyBestFirstPolicy :: (Ord p) => (s -> p) -> SNode s p -> p
-greedyBestFirstPolicy h node = h (SN.state node)
+greedyBestFirstPolicy :: (Ord i) => (s -> i) -> SearchPolicy s p i
+greedyBestFirstPolicy h = SearchPolicy (\node -> h $ SN.state node) Generation
 
 {-# INLINE aStarPolicy #-}
-aStarPolicy :: (Num p) => (s -> p) -> SNode s p -> p
-aStarPolicy h node = h (SN.state node) + SN.cost node
+aStarPolicy :: (Num p) => (s -> p) -> SearchPolicy s p p
+aStarPolicy h = SearchPolicy (\node -> h (SN.state node) + SN.cost node) Generation

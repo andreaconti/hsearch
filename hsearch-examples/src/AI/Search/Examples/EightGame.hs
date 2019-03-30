@@ -12,7 +12,7 @@ import Control.Monad
 import GHC.Generics (Generic)
 import Control.DeepSeq
 
-import AI.Search.Graph.Algorithms
+import AI.Search
 import AI.Search.Policies
 
 --------------------------------------
@@ -112,5 +112,4 @@ randomTable n = do
     return $ randomTable' (randomRs (0, 3) g) n goal
 
 -- SOLVER --
-
-solve = aStarSearch heuristic (== goal) stateGenerator
+solve = search graph (aStarPolicy heuristic) (== goal) stateGenerator

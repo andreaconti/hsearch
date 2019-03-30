@@ -5,7 +5,9 @@ module Main where
 import Data.Int
 import Data.List
 
-import AI.Search.Tree.Algorithms
+import AI.Search
+import AI.Search.Policies
+
 import Criterion.Main
 import Criterion.Types
 import Criterion.Main.Options
@@ -25,15 +27,15 @@ isValue v State{..} = value == v
 start = State 1 1
 
 -- | generates new states
-stateGenerator :: Int -> Int -> State -> [(State, Int8)]
+stateGenerator :: Int -> Int -> State -> [(State, Int)]
 stateGenerator branching maxNum state  = let next   = increase state 1
                                              others = take (branching-1) $ map (increase state) [(-1),(-2)..]
                                          in  if depth state >= maxNum
                                                 then []
                                                 else zip (others ++ [next]) [1,1..]
 
-breadthFirstBench branching depth = breadthFirstSearch (isValue depth) (stateGenerator branching depth)
-depthFirstBench branching depth = depthFirstSearch (isValue depth) (stateGenerator branching depth) 
+breadthFirstBench branching depth = search tree breadthFirstPolicy (isValue depth) (stateGenerator branching depth)
+depthFirstBench branching depth = search tree depthFirstPolicy (isValue depth) (stateGenerator branching depth) 
 
 -- command line output recap
 -- time    : OLS regression, estimates the time needed for a single execution
