@@ -26,7 +26,7 @@ module AI.Search
     , search
     , iterativeSearch
 
- -- * for search in graph or tree
+ -- * search state topology
     , tree
     , graph 
     ) where
@@ -37,9 +37,8 @@ import           Data.AI.Search.SearchRoute.Internal (SRoute(..))
 import qualified Data.AI.Search.SearchNode as SN
 import           Data.AI.Search.SearchNode (SNode(..))
 
-import           Data.AI.Search.SearchFringe.Internal (ClosedNodes)
 import qualified Data.AI.Search.SearchFringe as SF
-import           Data.AI.Search.SearchFringe (graph, tree)
+import           Data.AI.Search.SearchFringe (SFringe)
 
 import           AI.Search.Policies (CheckTime(..), SearchPolicy(..))
 
@@ -47,6 +46,17 @@ import           Control.Monad
 import           Control.Applicative
 import           Data.Foldable (toList)
 import           Data.Maybe (maybeToList, listToMaybe)
+
+-- ALIASES --
+
+type Topology i s p = (SRoute (SNode s p) -> i) -> SF.SFringe i (SRoute (SNode s p))
+
+tree :: Topology i s p
+tree = SF.emptyTree 
+
+graph :: (Ord s) => Topology i s p
+graph = SF.emptyGraph
+
 
 -- UTILS --
 
@@ -60,17 +70,17 @@ data MaxDepth = Forever | Until !Int deriving (Eq, Show)
 
 -- SEARCH --
 
-searchWith :: (Num p, Ord i, ClosedNodes f (SRoute (SNode s p)))
+searchWith :: (Num p, Ord i)
                              => (SNode s p -> a)                 -- ^ result function
                              -> MaxDepth                         -- ^ max depth to search
-                             -> f (SRoute (SNode s p))           -- ^ tree or graph search 
+                             -> Topology i s p                   -- ^ tree or graph search 
                              -> SearchPolicy s p i               -- ^ policy to be used
                              -> (s -> Bool)                      -- ^ function used to check if the goal is reached
                              -> (s -> [(s, p)])                  -- ^ generator of states
                              -> s                                -- ^ initial state
                              -> [a]                              -- ^ returns list of states
-searchWith rf !md frtype (SearchPolicy policy ct) cg g s = join . maybeToList $ loop initFringe
-    where initFringe = SF.singleton frtype (policy . SR.takeEnd) $ SR.singleton (SNode s 0 0)
+searchWith rf !md mkFringe (SearchPolicy policy ct) cg g s = join . maybeToList $ loop initFringe
+    where initFringe = SF.insert (mkFringe (policy . SR.takeEnd)) [(SR.singleton (SNode s 0 0))]
           loop fr = do
             (cFr, routeTail SR.:> currentSNode@(SNode cs cd cc) ) <- SF.next fr
             let 
@@ -88,8 +98,8 @@ searchWith rf !md frtype (SearchPolicy policy ct) cg g s = join . maybeToList $ 
 
 {-# INLINE search #-}
 -- | /genericSearch/ implements must generic high level search algorithm
-search :: (Num p, Ord i, ClosedNodes f (SRoute (SNode s p)))
-                  => f (SRoute (SNode s p))            -- ^ tree or graph search
+search :: (Num p, Ord i)
+                  => Topology i s p                   -- ^ tree or graph search 
                   -> SearchPolicy s p i               -- ^ policy to be used
                   -> (s -> Bool)                      -- ^ function used to check if the goal is reached
                   -> (s -> [(s, p)])                  -- ^ generator of states
@@ -101,8 +111,8 @@ search = searchWith state Forever
 -- | /iterativeSearch/ is equivalent to @searchUntilDepth@ called on increasing depths until the goal is found. Used with
 --   a depth first like policy can provide features similar to a search in amplitude (breadth first like policy)
 {-# INLINE iterativeSearch #-}
-iterativeSearch :: (Num p, Ord i, ClosedNodes f (SRoute (SNode s p)))
-                  => f (SRoute (SNode s p))           -- ^ tree or graph search
+iterativeSearch :: (Num p, Ord i)
+                  => Topology i s p                   -- ^ tree or graph search 
                   -> SearchPolicy s p i               -- ^ policy to be used
                   -> (s -> Bool)                      -- ^ function used to check if the goal is reached
                   -> (s -> [(s, p)])                  -- ^ generator of states
