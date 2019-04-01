@@ -34,12 +34,30 @@ problems:
 
 ## Simple use
 
-In modules **AI.Search.Tree.Algorithms** and **AI.Search.Graph.Algorithms** there are many implementations of
-different search algorithms, the former for tree search, the former for graph search. Interface is the same, the
-only differente is that in graph search algorithms keep track of closed nodes (states yet visited and expanded) in 
-order to skip them if are met again. Graph search obviously can be very less memory efficiente cause it force to
-mantain the whole search graph in memory (closed nodes + fringe) but allows to avoid cycles and converge faster when
-states repeate.
+Main module is `AI.Search` which implements many generic search algorithms, such algorithms can be used with both tree
+or graph search state spaces, the only difference is that in graph search algorithms keep track of closed nodes (states yet
+visited and expanded) in  order to skip them if are met again. Graph search obviously can be very less memory efficient cause
+forcing to mantain the whole search graph in memory (closed nodes + fringe) but allows to avoid cycles and converge faster when
+states repeate. 
+
+For instance:
+
+~~~haskell
+search :: (Num p, Ord i)
+                  => Topology i s p                   -- ^ tree or graph search 
+                  -> SearchPolicy s p i               -- ^ policy to be used
+                  -> (s -> Bool)                      -- ^ function used to check if the goal is reached
+                  -> (s -> [(s, p)])                  -- ^ generator of states
+                  -> s                                -- ^ initial state
+                  -> [s]                              -- ^ returns list of states
+~~~
+
+`search` function take:
+
+- topology : a way to tell if we are interested in a graph or tree search, `AI.Search` provides 2 topologies, `tree`
+  and `graph`
+- search policy : the policy to be used in order to build the search tree, for instance breadthFirstPolicy computes first
+  all childs of a node and then childs of childs and so on. 
 
 Common algorithms are:
 
