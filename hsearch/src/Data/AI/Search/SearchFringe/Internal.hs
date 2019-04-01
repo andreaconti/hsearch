@@ -62,6 +62,15 @@ tree = DoNothing
 empty :: (ClosedNodes f s) => f s -> (s -> i) -> SFringe i s
 empty cl = SFringe cl PQ.empty
 
+{-# INLINABLE emptyTree #-}
+emptyTree :: (s -> i) -> SFringe i s
+emptyTree = SFringe tree PQ.empty
+
+
+{-# INLINABLE emptyGraph #-}
+emptyGraph :: (Ord s) => (s -> i) -> SFringe i s
+emptyGraph = SFringe graph PQ.empty
+
 {-# INLINABLE singleton #-}
 singleton :: (ClosedNodes f s) => f s -> (s -> i) -> s -> SFringe i s
 singleton cl f s = SFringe cl (PQ.singleton (f s) s) f

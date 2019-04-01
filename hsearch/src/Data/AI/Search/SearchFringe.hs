@@ -1,9 +1,11 @@
 module Data.AI.Search.SearchFringe
     ( SFringe
-    , graph
     , tree
+    , graph
 
  -- * constructors   
+    , emptyTree
+    , emptyGraph
     , empty
     , singleton
     , insert
