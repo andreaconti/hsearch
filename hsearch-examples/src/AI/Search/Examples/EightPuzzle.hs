@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
 
-module AI.Search.Examples.EightGame where
+module AI.Search.Examples.EightPuzzle where
 
 import Data.Matrix
 import Data.Maybe
@@ -19,7 +19,6 @@ import AI.Search.Policies
 -- Example of solution of the Eight
 -- puzzle game 
 --------------------------------------
-
 
 -- model types
 data Card = Empty
@@ -77,11 +76,14 @@ findMoves table@(Table t p) = filter (\x -> bounds x && x /= p) [(ex-1, ey), (ex
     where (ex, ey) = fromJust $ emptyPos table
           bounds (x, y) = x >= 1 && y >= 1 && x <= nrows t && y <= ncols t
 
-stateGenerator :: Table -> [(Table, Int)]
+type Action = Table -> Table
+
+stateGenerator :: Table -> [(Action, Table, Int)]
 stateGenerator table = 
-                  let ep    = fromJust $ emptyPos table
-                      moves = findMoves table
-                  in  zip (map (\x -> switchCards ep x table) moves) [1,1..]
+                  let ep      = fromJust $ emptyPos table
+                      moves   = findMoves table
+                      actions = map (switchCards ep) moves
+                  in  zip3 actions [ f table | f <- actions ] [1,1..]
 
 switchCards :: Pos -> Pos -> Table -> Table
 switchCards (x1, y1) (x2, y2) (Table t _) = 
@@ -102,7 +104,7 @@ genTable :: [[Int]] -> Table
 genTable = (\t -> Table t (-1,-1)) . fromLists . map (map (\x -> if x == 0 then Empty else Card x))
 
 randomTable' randoms ops   table | ops <= 0 = table
-randomTable' (r:rs)  ops table = let tables  = map fst (stateGenerator table)
+randomTable' (r:rs)  ops table = let tables  = map (\(_, t, _) -> t) (stateGenerator table)
                                  in if r >= length tables
                                     then randomTable' rs ops table
                                     else randomTable' rs (ops-1) (tables !! r)
