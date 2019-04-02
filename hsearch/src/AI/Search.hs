@@ -9,10 +9,9 @@
 -- Stability   :  experimental
 -- Portability :  portable
 --
--- Implementation of AI search generic algorithms for graph search,
--- all functions in @AI.Search.Graph.Algorithms@ rely on this module.
--- Main function is `search`, instead for iterative deepening search 
--- there is `iterativeSearch`
+-- Implementation of AI search generic algorithms for graph or tree state 
+-- spaces. See @AI.Search.Policies@ for common policies such as breadth first
+-- search and so on.
 --
 -----------------------------------------------------------------------------
 
@@ -79,14 +78,15 @@ searchUntil :: (Num p, Ord i)
                              -> (s -> [(a, s, p)])               -- ^ generator of states
                              -> s                                -- ^ initial state
                              -> [a]                              -- ^ returns list of states
-searchUntil !md mkFringe (SearchPolicy policy ct) cg g s = join . maybeToList $ loop initFringe
-    where initFringe = SF.insert (mkFringe (policy . SR.takeEnd)) [SR.singleton (SNode s 0 0 undefined)]
+searchUntil !md mkFringe (SearchPolicy policy ct) cg g !s = join . maybeToList $ loop initFringe
+    where initFringe = SF.insert (mkFringe (policy . SR.takeEnd)) $ map (\(ac, ns, nc) -> SR.singleton $ SNode ns 1 nc ac) (g s)  --[SR.singleton (SNode s 0 0 undefined)]
+          
+          checkDepth Forever _   = True
+          checkDepth (Until d) x = x < d && d > 0
+
           loop fr = do
             (cFr, routeTail SR.:> currentSNode@(SNode cs cd cc ca) ) <- SF.next fr
             let 
-                checkDepth Forever _   = True
-                checkDepth (Until d) x = x < d && d > 0
-
                 newStates    = g cs
                 nextSNodes   = guard (checkDepth md cd) >> map (\(ac, ns, nc) -> SNode ns (cd+1) (nc+cc) ac) newStates
                 genGoal      = guard (ct == Generation && cg cs) >> (Just $! currentSNode)

@@ -27,12 +27,13 @@ isValue v State{..} = value == v
 start = State 1 1
 
 -- | generates new states
-stateGenerator :: Int -> Int -> State -> [(State, Int)]
+stateGenerator :: Int -> Int -> State -> [(State, State, Int)]
 stateGenerator branching maxNum state  = let next   = increase state 1
                                              others = take (branching-1) $ map (increase state) [(-1),(-2)..]
+                                             result = (others ++ [next])
                                          in  if depth state >= maxNum
                                                 then []
-                                                else zip (others ++ [next]) [1,1..]
+                                                else zip3 result result [1,1..]
 
 breadthFirstBench branching depth = search tree breadthFirstPolicy (isValue depth) (stateGenerator branching depth)
 depthFirstBench branching depth = search tree depthFirstPolicy (isValue depth) (stateGenerator branching depth) 

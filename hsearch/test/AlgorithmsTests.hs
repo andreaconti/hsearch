@@ -24,12 +24,13 @@ isValue v State{..} = value == v
 start = State 1 1
 
 -- | generates new states
-stateGenerator :: Int -> Int -> State -> [(State, Int8)]
+stateGenerator :: Int -> Int -> State -> [(State, State, Int8)]
 stateGenerator branching maxNum state  = let next   = increase state 1
                                              others = take (branching-1) $ map (increase state) [(-1),(-2)..]
+                                             result = others ++ [next]
                                          in  if depth state >= maxNum
                                                 then []
-                                                else zip (others ++ [next]) [1,1..]
+                                                else zip3 result result [1,1..]
 
 -- check end not found
 testBreadthFirstSearch1 = assertEqual "check correct error" [] (search graph breadthFirstPolicy (const False) (stateGenerator 2 5) start) 
