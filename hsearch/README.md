@@ -32,7 +32,7 @@ problems:
 - **SRoute** defines a spefific sequence of SNode in the Search Tree/Graph, it is not used directly
 - functions like `s -> Bool` are used in order to check if the goal has been reached
 
-## Simple use
+## Usage
 
 Main module is `AI.Search` which implements many generic search algorithms, such algorithms can be used with both tree
 or graph search state spaces, the only difference is that in graph search algorithms keep track of closed nodes (states yet
@@ -55,43 +55,9 @@ search :: (Num p, Ord i)
 `search` function take:
 
 - topology : a way to tell if we are interested in a graph or tree search, `AI.Search` provides 2 topologies, `tree`
-  and `graph`
+  and `graph`, in graph search state must be instance of `Ord`.
 - search policy : the policy to be used in order to build the search tree, for instance breadthFirstPolicy computes first
   all childs of a node and then childs of childs and so on. 
-
-Common algorithms are:
-
-- breadthFirstSearch
-- uniformCostSearch
-- depthFirstSearch   (with iterative flavor)
-- greedyBestFirst
-- aStarSearch        (with iterative flavor)
-
-Below an example of signature, `s` is the type of the state, `p` the type of the step_cost, its constraints
-are `Num` or `Num` and `Ord` depending on whether this value is used to choose the next node from the fringe.
-In graph search `s` must be instance of `Ord` cause this is used in order to mantain an efficiente set of closed
-nodes.
-
-~~~haskell
-depthFirstSearch :: (Eq s, Num p) => (s -> Bool)        -- ^ function used to check if the goal is reached
-                                  -> (s -> [(s, p)])    -- ^ generator of states
-                                  -> s                  -- ^ initial state
-                                  -> [s]                -- ^ returns list of states
-~~~
-
-## Custom use
-
-If simple use of algorithms is not enough, for instance if there is the need to use a custom policy, control when is applied the check of
-the goal or change the output type then is the case of `AI.Search.[Tree|Graph].Generics` which specifies more customizable search functions.
-For instance `search` enables to define a max depth in search but also the policy (common policies in `AI.Search.Policies`) and
-when check for the goal.
-
-~~~haskell
-iterativeSearch :: (Num p, Ord i) => (SNode s p -> a)  -- ^ result function
-                           -> (SNode s p -> i)         -- ^ policy to be used
-                           -> CheckTime                -- ^ when apply check goal
-                           -> (s -> Bool)              -- ^ function used to check if the goal is reached
-                           -> (s -> [(s, p)])          -- ^ generator of states
-                           -> s                        -- ^ initial state
-                           -> [a]                      -- ^ returns list of states
-~~~
+- (s -> Bool) : takes current state and check if the goal is reached
+- (s -> [(s, p)] : takes current state and generates next states, Num p => p represents the step cost to reach that node
+- s : is the initial state
