@@ -41,9 +41,9 @@ import           Data.AI.Search.SearchNode (SNode)
 data CheckTime = Generation | Expansion
     deriving (Eq, Show)
 
-data SearchPolicy s p i = SearchPolicy { policy    :: SNode s p -> i
-                                       , checkTime :: CheckTime
-                                       }
+data SearchPolicy s p i a = SearchPolicy { policy    :: SNode s p a -> i
+                                         , checkTime :: CheckTime
+                                         }
 
 -----------------------------------
 -- not informed policies
@@ -51,17 +51,17 @@ data SearchPolicy s p i = SearchPolicy { policy    :: SNode s p -> i
 
 -- | Breadth-First Search policy implementation, returns the depth
 {-# INLINE breadthFirstPolicy #-}
-breadthFirstPolicy :: SearchPolicy s p Int
-breadthFirstPolicy = SearchPolicy (\n -> SN.depth n) Generation
+breadthFirstPolicy :: SearchPolicy s p Int a
+breadthFirstPolicy = SearchPolicy SN.depth Generation
 
 -- | Uniform-Cost Search policy implementation
 {-# INLINE uniformCostPolicy #-}
-uniformCostPolicy :: (Ord p) => SearchPolicy s p p
+uniformCostPolicy :: (Ord p) => SearchPolicy s p p a
 uniformCostPolicy = SearchPolicy SN.cost Expansion
 
 -- | Depth-First Search policy implementation
 {-# INLINE depthFirstPolicy #-}
-depthFirstPolicy :: SearchPolicy s p Int
+depthFirstPolicy :: SearchPolicy s p Int a
 depthFirstPolicy = SearchPolicy (\n -> - (SN.depth n)) Generation
 
 -----------------------------------
@@ -69,9 +69,9 @@ depthFirstPolicy = SearchPolicy (\n -> - (SN.depth n)) Generation
 -----------------------------------
 
 {-# INLINE greedyBestFirstPolicy #-}
-greedyBestFirstPolicy :: (Ord i) => (s -> i) -> SearchPolicy s p i
+greedyBestFirstPolicy :: (Ord i) => (s -> i) -> SearchPolicy s p i a
 greedyBestFirstPolicy h = SearchPolicy (\node -> h $ SN.state node) Generation
 
 {-# INLINE aStarPolicy #-}
-aStarPolicy :: (Num p) => (s -> p) -> SearchPolicy s p p
+aStarPolicy :: (Num p) => (s -> p) -> SearchPolicy s p p a 
 aStarPolicy h = SearchPolicy (\node -> h (SN.state node) + SN.cost node) Generation
