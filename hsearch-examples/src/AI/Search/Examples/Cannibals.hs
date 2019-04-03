@@ -40,8 +40,8 @@ opsRL = [(1,1),(2,0),(0,2),(1,0),(0,1)]
 opsLR = map (\(x,y) -> (-x, -y)) opsRL
 
 reportGenerator :: LeftSide -> (Int, Int) -> String
-reportGenerator (m, c, L) (x, y) = printf "[M: %d, C: %d] ==(%d, %d)=> [M: %d, C: %d]" m c (abs x) (abs y) (3-m) (3-c)
-reportGenerator (m, c, R) (x, y) = printf "[M: %d, C: %d] <=(%d, %d)== [M: %d, C: %d]" m c (abs x) (abs y) (3-m) (3-c)
+reportGenerator (m, c, L) (x, y) = printf "[M: %d, C: %d] ==(%d, %d)=> [M: %d, C: %d]" (m+x) (c+y) (abs x) (abs y) (3-m) (3-c)
+reportGenerator (m, c, R) (x, y) = printf "[M: %d, C: %d] <=(%d, %d)== [M: %d, C: %d]" m c (abs x) (abs y) (3-m-x) (3-c-y)
 
 stateGenerator :: LeftSide -> [(String, LeftSide, Int)]
 stateGenerator stato@(_,_, side) = case side of
