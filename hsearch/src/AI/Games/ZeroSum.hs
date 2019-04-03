@@ -1,4 +1,6 @@
-module AI.Games.ZeroSum where
+module AI.Games.ZeroSum 
+    ( module AI.Games.ZeroSum.Internal
+    ) where
 
 -----------------------------------------------------------------------------
 -- |

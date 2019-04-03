@@ -29,7 +29,8 @@ library:
   - matrix
   - vector
   - random
-  - deepseq
+  - deepseq 
+  - vector
 
 benchmarks:
   hsearch-examples-benchs:
