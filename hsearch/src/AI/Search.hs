@@ -43,6 +43,8 @@ import           AI.Search.Policies (CheckTime(..), SearchPolicy(..))
 
 import           Control.Monad 
 import           Control.Applicative
+import           Control.Monad.Trans.Maybe
+
 import           Data.Foldable (toList)
 import           Data.Maybe (maybeToList, listToMaybe)
 
@@ -50,9 +52,15 @@ import           Data.Maybe (maybeToList, listToMaybe)
 
 type Topology i s p a = (SRoute (SNode s p a) -> i) -> SF.SFringe i (SRoute (SNode s p a))
 
+-- | /tree/ provides to search algorithms settings for searching in a states space which does not
+--   repeates states
+{-# INLINE tree #-}
 tree :: Topology i s p a
 tree = SF.emptyTree 
 
+{-# INLINE graph #-}
+-- | /graph/ provides to search algorithms settings for searching in a states space which behaves as
+--   a graph, skips yet closed states.
 graph :: (Ord s) => Topology i s p a
 graph = SF.emptyGraph
 
@@ -64,12 +72,19 @@ graph = SF.emptyGraph
 findGoal :: (s -> Bool) -> [s] -> Maybe s
 findGoal f = listToMaybe . take 1 . filter f
 
+-- | in order to check current depth
+{-# INLINE checkDepth #-}
+checkDepth :: MaxDepth -> Int -> Bool
+checkDepth Forever _   = True
+checkDepth (Until d) x = x < d && d > 0
+
 -- | max depth to search for
 data MaxDepth = Forever | Until !Int deriving (Eq, Show)
 
 -- SEARCH --
 
 -- /searchUntil/ search until limited depth
+{-# INLINE searchUntil #-}
 searchUntil :: (Num p, Ord i)
                              => MaxDepth                         -- ^ max depth to search
                              -> Topology i s p a                 -- ^ tree or graph search 
@@ -79,11 +94,7 @@ searchUntil :: (Num p, Ord i)
                              -> s                                -- ^ initial state
                              -> [a]                              -- ^ returns list of states
 searchUntil !md mkFringe (SearchPolicy policy ct) cg g !s = join . maybeToList $ loop initFringe
-    where initFringe = SF.insert (mkFringe (policy . SR.takeEnd)) $ map (\(ac, ns, nc) -> SR.singleton $ SNode ns 1 nc ac) (g s)  --[SR.singleton (SNode s 0 0 undefined)]
-          
-          checkDepth Forever _   = True
-          checkDepth (Until d) x = x < d && d > 0
-
+    where initFringe = SF.insert (mkFringe (policy . SR.takeEnd)) $ map (\(ac, ns, nc) -> SR.singleton $ SNode ns 1 nc ac) (g s)
           loop fr = do
             (cFr, routeTail SR.:> currentSNode@(SNode cs cd cc ca) ) <- SF.next fr
             let 
