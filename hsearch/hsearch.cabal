@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b4fee384a23ef84f05b62adeb90927b2505beb021b49ab7b1fdba6a418b7babe
+-- hash: a04a7b40361348784a6b4802fa17f7b97271e45a975ebc1ed382c16b47278500
 
 name:           hsearch
 version:        0.1.0.0
@@ -29,6 +29,8 @@ source-repository head
 
 library
   exposed-modules:
+      AI.Games.ZeroSum
+      AI.Games.ZeroSum.Internal
       AI.Search
       AI.Search.Policies
       Data.AI.Search.SearchFringe
