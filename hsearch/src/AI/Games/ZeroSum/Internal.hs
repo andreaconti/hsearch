@@ -2,9 +2,6 @@
 
 module AI.Games.ZeroSum.Internal
     ( minimax
-    , Alpha
-    , Beta
-    , Utility
     , MaxDepth
     , GNode
     ) where
@@ -21,6 +18,7 @@ import           Control.Monad
 import           Data.Function (on)
 import           Data.List
 import           Data.Ord (comparing)
+import           Numeric.Natural (Natural)
 
 -- TYPES --
 
@@ -34,10 +32,7 @@ data GNode s a = GNode { state  ::                !s      -- ^ state
 fromTuple :: Int -> (a, s) -> GNode s a
 fromTuple d (a, s) = GNode s d a
 
-type Alpha = Double
-type Beta  = Double
-type Utility = Double
-type MaxDepth = Int
+type MaxDepth = Natural
 
 -- UTILS --
 
@@ -56,17 +51,16 @@ headMay (GNode{..}:_) = Just action
 
 {-# INLINE minimax #-}
 minimax :: (Ord d, Bounded d)
-        => MaxDepth              -- ^ Int: depth until search
+        => Natural               -- ^ Int >= 0: depth until search
         -> (s -> d)              -- ^ utility function : high values for Max, low values for Min
         -> (s -> Bool)           -- ^ in order to recognize game terminal states
         -> (s -> [(a, s)])       -- ^ generator of states and actions
         -> s                     -- ^ current state
         -> Maybe a               -- ^ return: best action
-minimax m utility terminalTest generator state = do
-    guard  $ m > 0
-    let terminalTest' GNode{..} = terminalTest state || depth < m
+minimax m utility terminalTest generator state =
+    let terminalTest' GNode{..} = terminalTest state || depth < fromIntegral m
         fs = Funcs utility terminalTest' generator
-    headMay . map fst . sortBy (flip compare `on` snd) $ map (minValue minBound maxBound fs . fromTuple 0) (generator state)
+    in  headMay . map fst . sortBy (flip compare `on` snd) $ map (minValue minBound maxBound fs . fromTuple 0) (generator state)
 
 -- MIN NODES --
 
