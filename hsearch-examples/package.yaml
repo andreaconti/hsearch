@@ -30,7 +30,7 @@ library:
   - vector
   - random
   - deepseq 
-  - vector
+  - haskeline
 
 benchmarks:
   hsearch-examples-benchs:
